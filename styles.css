@@ -1,0 +1,266 @@
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  src: local('Open Sans Regular'), local('OpenSans-Regular'), url("https://fonts.gstatic.com/s/opensans/v16/mem8YaGs126MiZpBA-UFVZ0b.woff2") format('woff2');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  src: local('Roboto'), local('Roboto-Regular'), url("https://fonts.gstatic.com/s/roboto/v19/KFOmCnqEu92Fr1Mu4mxK.woff2") format('woff2');
+}
+@page {
+  size: A4;
+}
+body {
+  -webkit-print-color-adjust: exact;
+          color-adjust: exact;
+  background-color: #fff;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  display: flex;
+  justify-content: center;
+}
+.btn-print {
+  z-index: 1;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+}
+.resume {
+  display: block;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13.0736px;
+  font-weight: 400;
+  line-height: 1.5;
+  min-height: 1090.41px;
+}
+.resume h1 {
+  font-size: 2.86em;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+.resume h2 {
+  font-size: 1.43em;
+  font-weight: 600;
+  line-height: 1;
+  margin-bottom: 0;
+}
+.resume p {
+  margin-bottom: 1em;
+}
+.resume p:last-child {
+  margin-bottom: 0;
+}
+.resume ul {
+  padding-left: 20px;
+}
+.resume .resume__header,
+.resume .resume__section {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.95em;
+}
+.resume .resume__header {
+  padding: 0 0 0 0;
+}
+.resume .resume__section {
+  margin-bottom: 4em;
+}
+.resume .resume__section:last-child {
+  padding-bottom: 0;
+}
+.resume .resume__section-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.43em;
+}
+.resume .resume__section-title > i {
+  margin-right: 0.63em;
+  font-size: 1.14em;
+  background-color: #5695cd;
+  color: #fff;
+  border: 0.25em solid #aacae6;
+  border-radius: 50%;
+  width: 2.51em;
+  height: 2.51em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.6;
+}
+.resume .resume__section-title > h2 {
+  margin-top: 0;
+  font-size: 1.5em;
+}
+.resume .resume__columns {
+  overflow: hidden;
+  padding: 4em;
+  padding-top: 0;
+}
+.resume .resume__main {
+  float: left;
+  width: 75%;
+  padding-right: 3em;
+}
+.resume .resume__side {
+  float: left;
+  width: 25%;
+}
+.resume .other-info p > b {
+  color: #555;
+}
+.resume .info-item {
+  margin-bottom: 0.2em;
+  font-weight: 300;
+}
+.resume .info-item:last-child {
+  margin-bottom: 0;
+}
+.resume .info-label {
+  display: inline-block;
+  padding-right: 0.63em;
+  font-size: 1.14em;
+  min-width: 2.19em;
+  text-align: center;
+}
+.resume .info-label i {
+  color: #5695cd;
+}
+.resume .xp-item {
+  margin-bottom: 1em;
+}
+.resume .xp-item:last-child {
+  margin-bottom: 0;
+}
+.resume .xp-job {
+  font-size: 1.14em;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.resume .xp-job span,
+.resume .xp-job small {
+  font-weight: 400;
+}
+.resume .xp-job small {
+  font-size: 0.9em;
+}
+.resume__section-avatar {
+  /* Define the width or max-width for the container as needed */
+  width: 100%; /* This could be any width or max-width */
+  display: flex; /* Using flex to center the image if needed */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+}
+
+.resume__section-avatar img {
+  width: 150%; /* Make the image fill the container */
+  height: auto; /* Maintain aspect ratio */
+  max-width: 175px; /* Example max width for the image */
+}
+
+.resume .xp-date {
+  font-size: 0.8em;
+  margin-top: 0.3em;
+  margin-bottom: 1em;
+  color: #5695cd;
+}
+.resume .extra {
+  margin-bottom: 1em;
+}
+.resume .extra:last-child {
+  margin-bottom: 0;
+}
+.resume .extra-info small {
+  color: #666;
+  display: inline-block;
+  font-size: 0.7em;
+}
+.resume .extra-details,
+.resume .extra-details__progress {
+  border-radius: 6px;
+}
+.resume .extra-details {
+  margin-top: 0.5em;
+  background-color: #d1d9e1;
+  width: 100%;
+  height: 5px;
+  position: relative;
+}
+.resume .extra-details__progress {
+  background-color: #5695cd;
+  height: 5px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.resume .lang-item {
+  margin-bottom: 2em;
+}
+.resume .lang-item:last-child {
+  margin-bottom: 0;
+}
+.resume .lang-label {
+  width: 8em;
+}
+
+
+
+.sheet {
+  page-break-after: always; /* Ensures each sheet starts on a new page when printing */
+  width: 100%; /* Adjust as necessary to fit the content */
+  display: block; /* This is default but reiterated here for clarity */
+  margin-bottom: 20px; /* Adjust space between sheets for on-screen viewing */
+}
+
+body, .container {
+  display: block; /* or 'flex' with 'flex-direction: column;' */
+  width: 100%; /* Ensures it fills the screen or print page */
+}
+
+.resume__section-title i {
+  color: #4a4a4a; /* Cambia el color según tu preferencia */
+}
+
+.resume__certifications ul,
+.resume__languages ul,
+.resume__references .reference-item {
+  margin-bottom: 0.5em;
+  list-style-type: none; /* Remueve los bullets de la lista */
+  padding-left: 0; /* Alinea con el título de la sección */
+}
+
+.resume__references .reference-item b {
+  font-weight: 600; /* Hace el nombre de la referencia más notorio */
+}
+
+.resume__references .reference-item span {
+  display: block; /* Pone el teléfono en una nueva línea */
+  color: #5695cd; /* Color para los números de teléfono */
+}
+
+@media print {
+  body {
+    min-width: initial !important;
+  }
+  .btn-print {
+    display: none !important; 
+  }
+
+  .sheet {
+    page-break-after: always;
+  }
+
+  .container {
+    margin: 0 auto;
+  }
+
+}
+
+@page {
+  size: A4;
+}

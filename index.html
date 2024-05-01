@@ -1,0 +1,546 @@
+<html>
+
+<head>
+  <title>David Developer</title>
+  <!-- CSS styles -->
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" />
+  <!-- Paper CSS for A4 size paper -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paper-css/0.4.1/paper.min.css" />
+  <!-- Other head content like your own stylesheet links, etc. -->
+</head>
+
+<body class="A4">
+  <div class="sheet">
+    <button class="btn btn-print btn-sm btn-light" onClick="handlePrint()">
+      <i class="fa fa-print"></i>
+      Imprimir
+    </button>
+    <div class="two-column resume">
+      <section class="resume__section resume__header"></section>
+      <div class="resume__columns">
+        <div class="resume__main">
+          <section class="resume__section resume__header">
+            <div class="resume__content">
+              <h1>David A. Vique Almeida</h1>
+              <!-- Graduation -->
+              <div class="info-item">
+                <span class="info-label"><i class="fa fa-graduation-cap"></i></span><span class="info-text">Ingeniero en
+                  software</span>
+              </div>
+              <!-- University -->
+              <div class="info-item">
+                <span class="info-label"><i class="fa fa-university"></i></span><span class="info-text">Universidad de
+                  las Fuerzas Armadas ESPE</span>
+              </div>
+              <!-- Email-->
+              <div class="info-item">
+                <span class="info-label"><i class="fa fa-envelope"></i></span><span
+                  class="info-text">davidwicho501998@gmail.com</span>
+              </div>
+              <!-- Phone -->
+              <div class="info-item">
+                <span class="info-label"><i class="fa fa-phone"></i></span><span class="info-text">+593
+                  0992520223</span>
+              </div>
+
+
+
+          </section>
+          <section class="resume__section resume__summary">
+            <div class="resume__content">
+              <div class="resume__section-title">
+                <i class="fa fa-pencil-square-o"></i>
+                <h2>Resumen profesional</h2>
+              </div>
+              <div class="other">
+                <div class="other-info">
+                  <p>
+                    Como ingeniero de software con experiencia en desarrollo Full Stack y DevOps, me especializo en la
+                    creación, mantenimiento y optimización de aplicaciones complejas y sistemas web. Poseo una sólida
+                    formación técnica en tecnologías como Java, C#, Python, PHP, y JavaScript, con un enfoque particular
+                    en frameworks como Spring Boot, .Net, Django, Laravel, Angular y Vue. Mi experiencia también abarca
+                    la
+                    integración de soluciones de DevOps utilizando Docker, AWS y CI/CD para mejorar la eficiencia y
+                    automatización de los procesos. Profundamente comprometido con el aprendizaje continuo y la
+                    enseñanza, me esfuerzo por mantenerme actualizado con las últimas tendencias y mejores prácticas en
+                    el desarrollo de software. Trabajo eficazmente tanto de manera autónoma como en equipo, adaptándome
+                    rápidamente a nuevos entornos tecnológicos para entregar soluciones robustas y escalables.
+                  </p>
+                  <p>
+                    En mi tiempo libre, me dedico a la programación creativa,
+                    como el diseño de videojuegos y la mejora de
+                    experiencias de usuario mediante la integración de
+                    tecnologías de inteligencia artificial.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="resume__section resume__experience">
+            <div class="resume__content">
+              <div class="resume__section-title">
+                <i class="fa fa-briefcase"></i>
+                <h2>Historial laboral</h2>
+              </div>
+
+              <div class="xp-item">
+                <div class="xp-job">
+                  Full Stack Developer / DevOps
+                  <span>@ Taurhus Capacitaciones</span><br /><small>Illuchi, Ecuador</small>
+                </div>
+                <div class="xp-date">Apr. 2023 – Actualidad</div>
+                <div class="xp-detail">
+                  <ul>
+                    <li>
+                      Diseño, construcción y mantenimiento de sitios web utilizando Laravel, Tailwind CSS, Vue, React, y
+                      WordPress; integrando CI/CD en AWS con Github.
+                    </li>
+                    <li>
+                      Automatización de tareas y optimización de rendimiento a través de scripts personalizados, con una
+                      gestión eficiente de bases de datos y actualización constante de estándares y prácticas de
+                      desarrollo web.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="xp-item">
+                <div class="xp-job">
+                  Full Stack Developer - "Tribbu" Condominium Management Application <span>@ Seneca
+                    Corp</span><br /><small>Quito, Ecuador</small>
+                </div>
+                <div class="xp-date">Jan. 2023 - Apr. 2023</div>
+                <div class="xp-detail">
+                  <ul>
+                    <li>
+                      Participación en el desarrollo del proyecto de gestión de condominios, con un enfoque de
+                      implementación de prácticas de desarrollo ágil.
+                    </li>
+                    <li>
+                      Contribución a la mejora continua de los procesos de desarrollo, en la contribución al sistema de
+                      Agrocalidad, actualizando el sistema de inicio de sesión y desarrollando la firma digital
+                      utilizando Vue y Laravel.
+                    </li>
+
+                  </ul>
+                </div>
+              </div>
+
+            </div>
+          </section>
+        </div>
+        <div class="resume__side">
+          <section class="resume__section resume__skills">
+            <div class="resume__content">
+              <div class="resume__section-avatar">
+                <img src="images/david.jpg" alt="David Almeida" />
+              </div>
+            </div>
+          </section>
+          <section class="resume__section resume__skills">
+            <div class="resume__content">
+              <div class="resume__section-title">
+                <i class="fa fa-align-center"></i>
+                <h2>Habilidades</h2>
+              </div>
+              <div class="resume__text">
+                <div class="extra">
+                  <div class="extra-info">
+                    JAVA<br /><small>Spring Boot</small>
+                  </div>
+                  <div class="extra-details">
+                    <div class="extra-details__progress" style="width: 80%"></div>
+                  </div>
+                </div>
+                <div class="extra">
+                  <div class="extra-info">
+                    C#<br /><small>.Net · Unity</small>
+                  </div>
+                  <div class="extra-details">
+                    <div class="extra-details__progress" style="width: 80%"></div>
+                  </div>
+                </div>
+                <div class="extra">
+                  <div class="extra-info">
+                    Python<br /><small>Django</small>
+                  </div>
+                  <div class="extra-details">
+                    <div class="extra-details__progress" style="width: 75%"></div>
+                  </div>
+                </div>
+                <div class="extra">
+                  <div class="extra-info">
+                    PHP<br /><small>Laravel</small>
+                  </div>
+                  <div class="extra-details">
+                    <div class="extra-details__progress" style="width: 70%"></div>
+                  </div>
+                </div>
+                <div class="extra">
+                  <div class="extra-info">
+                    JavaScript<br /><small>Angular · Vue</small>
+                  </div>
+                  <div class="extra-details">
+                    <div class="extra-details__progress" style="width: 70%"></div>
+                  </div>
+                </div>
+                <div class="extra">
+                  <div class="extra-info">
+                    HTML<br /><small>HTML5 · Pug</small>
+                  </div>
+                  <div class="extra-details">
+                    <div class="extra-details__progress" style="width: 90%"></div>
+                  </div>
+                </div>
+                <div class="extra">
+                  <div class="extra-info">
+                    CSS<br /><small>Stylus · Sass · Bootstrap</small>
+                  </div>
+                  <div class="extra-details">
+                    <div class="extra-details__progress" style="width: 90%"></div>
+                  </div>
+                </div>
+                <div class="extra">
+                  <div class="extra-info">
+                    DevOps<br /><small>Docker · Shell · AWS · CI/CD · GitHub Tasks</small>
+                  </div>
+                  <div class="extra-details">
+                    <div class="extra-details__progress" style="width: 82%"></div>
+                  </div>
+                </div>
+                <div class="extra">
+                  <div class="extra-info">
+                    Bases de datos<br /><small>PostgreSQL · MySQL · MongoDB · Firebase </small>
+                  </div>
+                  <div class="extra-details">
+                    <div class="extra-details__progress" style="width: 80%"></div>
+                  </div>
+                </div>
+                <div class="extra">
+                  <div class="extra-info">
+                    Sistemas Operativos<br /><small>
+                      <i class="fa fa-linux"></i> GNU/Linux ·
+                      <i class="fa fa-windows"></i> Windows</small>
+                  </div>
+                  <div class="extra-details">
+                    <div class="extra-details__progress" style="width: 90%"></div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </section>
+          <section class="resume__section resume__languages">
+            <div class="resume__content">
+              <div class="resume__section-title">
+                <i class="fa fa-globe"></i>
+                <h2>Idiomas</h2>
+              </div>
+              <div class="extra">
+                <div class="extra-info">
+                  Español <small>(nativo)</small>
+                </div>
+                <div class="extra-details">
+                  <div class="extra-details__progress" style="width: 100%"></div>
+                </div>
+              </div>
+              <div class="extra">
+                <div class="extra-info">English <small>(B1-level)</small></div>
+                <div class="extra-details">
+                  <div class="extra-details__progress" style="width: 75%"></div>
+                </div>
+              </div>
+              <div class="extra">
+                <div class="extra-info">Francés <small>(A1-level)</small></div>
+                <div class="extra-details">
+                  <div class="extra-details__progress" style="width: 10%"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="one-column resume">
+      <section class="resume__section resume__header"></section>
+      <div class="resume__columns">
+        <!-- -->
+        <div class="resume__main" style="width: 100%;">
+          <section class="resume__section resume__experience">
+            <div class="resume__content">
+              <div class="xp-item">
+                <div class="xp-job">
+                  Game Engine Developer / AI Specialist
+                  <span>@ ESPE @ Taurhus Capacitaciones</span><br /><small>Belisario Quevedo, Ecuador</small>
+                </div>
+                <div class="xp-date">Aug. 2021 – Apr. 2023</div>
+                <div class="xp-detail">
+                  <ul>
+                    <li>
+                      Desarrollo e implementación de un simulador de polígono de tiro para mi tesis de ingeniería de
+                      software en Unity, integrando circuitos electrónicos y comunicación inalámbrica, con aplicaciones
+                      de inteligencia artificial para detección de precisión de disparo.
+                    </li>
+                    <li>
+                      Diseño de experiencias interactivas y optimización de la interfaz de usuario, investigación en
+                      visión artificial, y mantenimiento continuo para asegurar compatibilidad con nuevas plataformas
+                      tecnológicas. Documentación exhaustiva del sistema incluida.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="xp-item">
+                <div class="xp-job">
+                  Web Application Developer - "Entrepreneur Artesanal" <span>@ Cotopaxi Province</span><br /><small>La
+                    Victoria, Ecuador</small>
+                </div>
+                <div class="xp-date">Dec. 2021 - Mar. 2022</div>
+                <div class="xp-detail">
+                  <ul>
+                    <li>
+                      Desarrollo de una aplicación web en Angular para la gestión de producción y comercialización de
+                      tejas artesanales, como parte de mi proyecto de vinculación con la Universidad. Implementación de
+                      microservicios en Spring Boot para una arquitectura escalable y mantenible.
+                    </li>
+                    <li>
+                      Colaboración con un equipo para crear una plataforma accesible para artesanos de la provincia de
+                      Cotopaxi, ofreciendo una interfaz intuitiva y robusta que mejora la eficiencia de los procesos de
+                      negocio artesanales.
+                    </li>
+
+                  </ul>
+                </div>
+              </div>
+
+              <div class="xp-item">
+                <div class="xp-job">
+                  Full Stack Developer - Angular/Node.js
+                  <span>@ GCI: Remoto prácticas preprofesionales</span><br /><small>Universidad de las Fuerzas
+                    Espe</small>
+                </div>
+                <div class="xp-date">Feb. 2021 - Jul. 2021</div>
+                <div class="xp-detail">
+                  <ul>
+                    <li>
+                      Desarrollo de front-end en Angular y servicios back-end en Node.js para una aplicación web gestora
+                      de productos y servicios, como parte de mis prácticas profesionales de la universidad.
+                      Participación en todas las fases del ciclo de vida del desarrollo de software, siguiendo la
+                      metodología ágil Scrum.
+                    </li>
+                    <li>
+                      Elaboración de manuales técnico y de usuario, documentando código y arquitectura del sistema.
+                      Colaboración estrecha con un Ingeniero en Sistemas para supervisión del proyecto, con un enfoque
+                      en mantenimiento, actualización continua y resolución de problemas para asegurar la calidad y
+                      rendimiento óptimos.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="one-column resume">
+      <section class="resume__section resume__header"></section>
+      <div class="resume__columns">
+        <div class="resume__main" style="width: 100%;">
+          <section class="resume__section resume__experience">
+            <div class="resume__content">
+
+              <div class="resume__section-title">
+                <i class="fa fa-briefcase"></i>
+                <h2>Historial laboral y educativa</h2>
+              </div>
+
+              <div class="xp-item">
+                <div class="xp-job">
+                  Programming Instructor <span>@ Algorithmics International School</span><br /><small>Latacunga, Ecuador
+                    - Fenix Corp</small>
+                </div>
+                <div class="xp-date">Sept. 2023 – Actualidad</div>
+                <!-- Reemplaza "Fecha de inicio" con tu fecha real de inicio -->
+                <div class="xp-detail">
+                  <ul>
+                    <li>
+                      Enseñanza de programación a niños y jóvenes de 6 a 17 años en temas como Python, diseño web, y
+                      diseño de videojuegos, siguiendo el currículo de Algorithmics. Implementación de clases
+                      presenciales en Latacunga y virtuales para estudiantes de todo Ecuador.
+                    </li>
+                    <li>
+                      Participación en proyectos educativos y mentoría individual con estudiantes universitarios,
+                      enfocando en habilidades de presentación y gestión de proyectos. Contribuyendo significativamente
+                      al crecimiento y desarrollo profesional de los estudiantes.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="xp-item">
+                <div class="xp-job">
+                  API Developer - "Yaku" Spanish to Kichwa Unilateral Translator <span>@ Universidad de las Fuerzas
+                    Armadas ESPE</span><br /><small>Belisario Quevedo, Latacunga</small>
+                </div>
+                <div class="xp-date">Jan. 2021 - Mar. 2021</div>
+                <div class="xp-detail">
+                  <ul>
+                    <li>
+                      Desarrollo de una API Rest en Node.js para la traducción de español a Kichwa, mejorando los
+                      recursos educativos y asegurando la gestión eficiente de datos con MongoDB. Aplicación de la
+                      metodología MADA y documentación con SWAGGER para facilitar la integración y uso.
+                    </li>
+                    <li>
+                      Creación de la API "Yaku", una herramienta educativa y cultural diseñada para ser utilizada en
+                      juegos y otros medios interactivos, promoviendo el uso del idioma Kichwa en diversas aplicaciones.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="xp-item">
+                <div class="xp-job">
+                  Application Developer .NET - Sector Educativo
+                  <span>@ Unidad Educativa La Salle</span><br /><small>Latacunga, Ecuador</small>
+                </div>
+                <div class="xp-date">Sept 2019 - Feb 2020</div>
+                <div class="xp-detail">
+                  <ul>
+                    <li>
+                      Desarrollo de "Plearn", una aplicación de escritorio en .NET para la educación interactiva de
+                      niños de 4 a 6 años, incluyendo cuentos interactivos, pizarra mágica, y juegos de adivinanzas
+                      diseñados para facilitar el aprendizaje lúdico.
+                    </li>
+                    <li>
+                      Colaboración en la planificación y ejecución del proyecto, asegurando la accesibilidad y
+                      usabilidad para niños mediante pruebas y ajustes iterativos. Diseño de la arquitectura de software
+                      y la interfaz de usuario, junto con la creación de material de soporte para el personal educativo.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="xp-item">
+                <div class="xp-job">
+                  Profesor de Programación - Bachillerato Internacional <span>@ Unidad Educativa La
+                    Salle</span><br /><small>Latacunga, Ecuador</small>
+                </div>
+                <div class="xp-date">Sept. 2019 – Feb. 2020</div>
+                <div class="xp-detail">
+                  <ul>
+                    <li>
+                      Ejecución de clases de programación para estudiantes de 16 a 17 años, enfocadas en el programa de
+                      Bachillerato Internacional, con dirección de proyectos individuales que promueven el uso avanzado
+                      de herramientas tecnológicas.
+                    </li>
+                    <li>
+                      Evaluación de proyectos estudiantiles basada en criterios académicos clave, promoción de
+                      aprendizaje práctico y establecimiento de un entorno de aprendizaje colaborativo que fomenta la
+                      exploración técnica y el desarrollo profesional y personal de los estudiantes.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="xp-item">
+                <div class="xp-job">
+                  Application Developer JAVA - "Juego Traductor Español a Quichua 'Imanalla'" <span>@ Universidad de las
+                    Fuerzas Armadas ESPE</span><br /><small>Belisario Quevedo, Ecuador</small>
+                </div>
+                <div class="xp-date">Sep 2018 - Feb 2019</div>
+                <div class="xp-detail">
+                  <ul>
+                    <li>
+                      Desarrollo de una aplicación de escritorio educativa en Java, diseñada para el aprendizaje del
+                      idioma Quichua mediante juegos interactivos con niveles de dificultad variados, optimizando el
+                      aprendizaje lingüístico.
+                    </li>
+                    <li>
+                      Uso de GIMP para el diseño de elementos gráficos, creando una interfaz de usuario intuitiva y
+                      atractiva. La herramienta fue puesta a disposición de la Universidad de las Fuerzas Armadas ESPE.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <div class="one-column resume">
+      <section class="resume__section resume__header"></section>
+      <div class="resume__columns">
+        <div class="resume__main" style="width: 100%;">
+          <section class="resume__section resume__experience">
+            <div class="resume__content">
+              <div class="resume__section-title">
+                <i class="fa fa-certificate"></i>
+                <h2>Certificaciones</h2>
+              </div>
+              <div class="xp-item">
+                <div class="xp-detail">
+                  <ul>
+                    <li>Concurso de programación de 24 horas seguidas organizado por la IEEE.</li>
+                    <li>Adobe Ilustrator, Photoshop para el diseño vectorizado.</li>
+                    <li>Modelado 3D en Blender para el diseño de escenarios históricos.</li>
+                    <li>Enseñanza de la programación en Python, Scratch y Roblox por parte de la escuela internacional
+                      de programación
+                      Algorithmics.</li>
+                    <li>Scrum Master, reconocida por el ministerio de trabajo.</li>
+                  </ul>
+                </div>
+              </div>
+
+            </div>
+          </section>
+          <section class="resume__section resume__references">
+            <div class="resume__content">
+              <div class="resume__section-title">
+                <i class="fa fa-users"></i>
+                <h2>Referencias</h2>
+              </div>
+              <div class="reference-item">
+                <b>Maritza Andrade</b> - Gerente de Algorithmics. <span>+593 0984015619</span>
+              </div>
+              <div class="reference-item">
+                <b>Wendy Esposito</b> - Gerente de Taurhus Cía. Ltda. <span>+593 0997393531</span>
+              </div>
+              <div class="reference-item">
+                <b>Gabriela Campoverde</b> - Ingeniera en automatización GCI.
+                <span>+593 0979154409</span>
+              </div>
+              <div class="reference-item">
+                <b>Edison Espinoza</b> - Profesor ESPE.<span>+593 0984272898</span>
+              </div>
+              <div class="reference-item">
+                <b>Luis Chicaiza</b> - Ingeniero en Software. <span>+593 0959743877</span>
+              </div>
+
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function handlePrint() {
+      window.print();
+    }
+  </script>
+</body>
+
+</html>
