@@ -11,6 +11,27 @@
   <!-- Paper CSS for A4 size paper -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paper-css/0.4.1/paper.min.css" />
   <!-- Other head content like your own stylesheet links, etc. -->
+  <style>
+    /* Estilos para impresión A4 */
+    @media print {
+
+      /* Eliminar elementos no necesarios durante la impresión */
+      .btn-print {
+        display: none;
+      }
+
+      body.A4 {
+        transform: scale(1.5);
+        /* Escala por 2 */
+        transform-origin: top left;
+      }
+    }
+
+    /* Ajustes de la página para impresión */
+    @page {
+      size: A4;
+    }
+  </style>
 </head>
 
 <body class="A4">
@@ -71,9 +92,10 @@
                 <div class="other-info">
                   <p>
                     Software engineer with experience in Full Stack and DevOps, specializing in creating and optimizing
-                    complex applications. Committed to continuous learning and teaching, I quickly adapt to new
+                    complex applications. Committed to continuous learning, I adapt quickly to new
                     technologies to deliver scalable solutions. I integrate Artificial Intelligence to enhance user
-                    experience and dedicate myself to creative programming, including game and web design.
+                    experience and dedicate myself to creative programming, including game and web design. Additionally,
+                    I have a natural ability to teach others, effectively sharing my knowledge and skills as a teacher.
                   </p>
                 </div>
               </div>
@@ -88,15 +110,16 @@
 
               <div class="xp-item">
                 <div class="xp-job">
-                  Full Stack/DevOps Developer
-                  <span>@Fenix Corp Ecuador</span><br /><small>Latacunga, Ecuador</small><br />
+                  Full Stack Developer
+                  <span>@Fenix Corp</span><br /><small>Latacunga, Ecuador</small><br />
                   <small>(React, Node JS Express, LangChain Aibitat RAG)</small>
                 </div>
                 <div class="xp-date">May. 2024 – Present</div>
                 <div class="xp-detail">
                   <ul>
                     <li>
-                      ChatBot LLM with access to corporate knowledge bases with integration to TikTok, YouTube, SharePoint, and more.
+                      ChatBot LLM with access to corporate knowledge bases with integration to Moodle, SharePoint, TikTok, YouTube
+                      and more.
                     </li>
                   </ul>
                 </div>
@@ -140,7 +163,7 @@
                 <div class="xp-job">
                   Game Engine/AI Developer
                   <span>@ESPE @Taurhus Capacitaciones</span><br /><small>Belisario Quevedo, Ecuador</small><br />
-                  <small>(Unity, Python, OpenCV, TensorFlow, Kinect 2, ESP32)</small>
+                  <small>(Unity, Python, OpenCV, Kinect 2, ESP32)</small>
                 </div>
                 <div class="xp-date">Aug. 2021 – Apr. 2023</div>
                 <div class="xp-detail">
@@ -180,6 +203,9 @@
                   <div class="extra">
                     <div class="extra-info">English <small>(C1-level)</small></div>
                   </div>
+                  <div class="extra">
+                    <div class="extra-info">French <small>(A1-level)</small></div>
+                  </div>
                 </div>
               </section>
               <div class="resume__section-title">
@@ -217,7 +243,7 @@
                     Backend<br /><small>Django · Spring Boot · .NET</small>
                   </div>
                 </div>
-                
+
                 <div class="extra">
                   <div class="extra-info">
                     Databases<br /><small>PostgreSQL · MySQL · MongoDB · Firebase · SQLite</small>
@@ -393,7 +419,8 @@
                   <ul>
                     <li><a href="docs/algorithmics_basic.pdf" target="_blank">Algorithmics Basic (PDF)</a></li>
                     <li><a href="docs/algorithmics_python.pdf" target="_blank">Algorithmics Python (PDF)</a></li>
-                    <li><a href="docs/basic_augmented_reality.pdf" target="_blank">Basic Augmented Reality (PDF)</a></li>
+                    <li><a href="docs/basic_augmented_reality.pdf" target="_blank">Basic Augmented Reality (PDF)</a>
+                    </li>
                     <li><a href="docs/cocktail_workshop.pdf" target="_blank">Cocktail Workshop (PDF)</a></li>
                     <li><a href="docs/scrum_360.pdf" target="_blank">Scrum 360º (PDF)</a></li>
                     <li><a href="docs/espe_b2.pdf" target="_blank">ESPE B2 (PDF)</a></li>
@@ -401,9 +428,11 @@
                     <li><a href="docs/bica_2023.pdf" target="_blank">BICA 2023 (PDF)</a></li>
                     <!-- Enlace a todos los certificados en Google Drive -->
                     <li>
-                      <b>View all certificates:</b> 
-                      <a href="https://drive.google.com/drive/folders/1LahhI_-xdrv_8ldhXIXR-ofnVdKmcA90?usp=sharing" target="_blank">Access Certificates</a>
-                      <a href="https://drive.google.com/drive/folders/1LahhI_-xdrv_8ldhXIXR-ofnVdKmcA90?usp=sharing" target="_blank">https://drive.google.com/drive/folders/1LahhI_-xdrv_8ldhXIXR-ofnVdKmcA90?usp=sharing</a>
+                      <b>View all certificates:</b>
+                      <a href="https://drive.google.com/drive/folders/1LahhI_-xdrv_8ldhXIXR-ofnVdKmcA90?usp=sharing"
+                        target="_blank">Access Certificates</a>
+                      <a href="https://drive.google.com/drive/folders/1LahhI_-xdrv_8ldhXIXR-ofnVdKmcA90?usp=sharing"
+                        target="_blank">https://drive.google.com/drive/folders/1LahhI_-xdrv_8ldhXIXR-ofnVdKmcA90?usp=sharing</a>
                     </li>
                   </ul>
                 </div>
@@ -420,14 +449,15 @@
                 <div class="xp-detail">
                   <ul>
                     <li>
-                      David Alberto Vique Almeida, Luis Armando Chicaiza Conteron, José Luis Carrillo Medina, Edison Gonzalo Espinosa Gallardo. 
-                      <i>Prediction of the Correct Firing Position with a Pistol Based on a MANFIS Model</i>. 
-                      Biologically Inspired Cognitive Architectures 2023. Studies in Computational Intelligence, 
-                      Volume 1130, pp 912–923, Springer, 2024. 
-                      <a href="https://link.springer.com/conferencepaper/10.1007/978-3-031-31669-5_83" target="_blank">Access paper</a>
+                      David Alberto Vique Almeida, Luis Armando Chicaiza Conteron, José Luis Carrillo Medina, Edison Gonzalo Espinosa Gallardo.
+                      <i>Prediction of the Correct Firing Position with a Pistol Based on a MANFIS Model</i>.
+                      Biologically Inspired Cognitive Architectures 2023. Studies in Computational Intelligence,
+                      Volume 1130, Springer, 2024.
+                      <a href="https://doi.org/10.1007/978-3-031-50381-8_99" target="_blank">Access paper</a>
                       <!-- URL as text-->
-                      <a href="https://link.springer.com/conferencepaper/10.1007/978-3-031-31669-5_83" target="_blank">https://link.springer.com/conferencepaper/10.1007/978-3-031-31669-5_83</a>
+                      <a href="https://doi.org/10.1007/978-3-031-50381-8_99" target="_blank">https://doi.org/10.1007/978-3-031-50381-8_99</a>
                     </li>
+                    
                   </ul>
                 </div>
               </div>
@@ -465,7 +495,7 @@
       </div>
     </div>
   </div>
-  
+
   <script>
     function handlePrint() {
       window.print();
