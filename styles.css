@@ -26,12 +26,7 @@ body {
   display: flex;
   justify-content: center;
 }
-.btn-print {
-  z-index: 1;
-  position: absolute;
-  right: 15px;
-  top: 15px;
-}
+
 .resume {
   display: block;
   font-family: 'Roboto', sans-serif;
@@ -41,7 +36,7 @@ body {
   min-height: 1090.41px;
 }
 .resume h1 {
-  font-size: 2.86em;
+  font-size: 2.50em;
   font-weight: 600;
   letter-spacing: -0.5px;
 }
@@ -243,12 +238,36 @@ body, .container {
   color: #5695cd; /* Color para los números de teléfono */
 }
 
+.reference-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.certifications-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Creates three equal columns */
+  gap: 15px; /* Adds space between the columns */
+  list-style: none; /* Removes the default list bullet points */
+  padding: 0;
+}
+
+.btn-open {
+  display: none !important;
+}
+
 @media print {
   body {
     min-width: initial !important;
   }
+
   .btn-print {
-    display: none !important; 
+    display: none !important;
+  }
+
+  /* Btn Open view when is print */
+  .btn-open {
+    display: block !important;
   }
 
   .sheet {
@@ -257,6 +276,10 @@ body, .container {
 
   .container {
     margin: 0 auto;
+  }
+
+  .iframe-certification {
+    display: none !important;
   }
 
 }
