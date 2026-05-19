@@ -1,6 +1,6 @@
 <html>
-
 <head>
+  <meta charset="UTF-8" />
   <title>David Developer</title>
   <!-- CSS styles -->
   <link rel="stylesheet" href="styles.css" />
@@ -31,6 +31,37 @@
     @page {
       size: A4;
     }
+
+    /* Standardize font family to Roboto throughout */
+    .resume .resume__header,
+    .resume .resume__section { font-family: 'Roboto', sans-serif !important; }
+
+    /* Compact job spacing */
+    .resume__section { margin-bottom: 0.5em !important; }
+    .resume__section-title { margin-bottom: 0.4em; margin-top: 0; }
+    .resume__section-title h2 { margin-top: 0; font-size: 1.1em; }
+    .resume__columns { padding: 2em; padding-top: 1.5em; }
+    .two-column.resume, .one-column.resume { padding-top: 1.5em; padding-bottom: 1.5em; }
+    .resume__main { padding-right: 1.5em; }
+    .xp-item { margin-bottom: 1.8em !important; }
+    .xp-date { margin-top: 0.1em; margin-bottom: 0.3em; }
+    .xp-detail ul { margin-bottom: 0; margin-top: 0; }
+    .resume__header { padding: 0 !important; margin-bottom: 0.3em !important; }
+    .info-item { margin-bottom: 0.1em; }
+    .info-text { font-size: 1.03em; }
+    .resume__section-title > i { display: flex !important; }
+    .other-info p { font-size: 1.03em; margin-bottom: 0.2em; }
+    .resume__summary p { font-size: 1.03em; margin-bottom: 0.2em; }
+    .resume__summary { margin-top: 0.8em !important; }
+    .resume__languages { margin-top: 0.3em !important; }
+    .resume__languages .extra, .resume__skills .extra { margin-bottom: 0.15em !important; }
+    .extra-info { font-size: 1.05em; }
+    .extra-info small { font-size: 1.05em; color: #666; }
+    .resume__certifications li,
+    .resume__publications li { font-size: 1.03em; }
+    .reference-item { font-size: 1.03em; margin-bottom: 0.3em; }
+    .resume h1 { font-family: 'Roboto', sans-serif !important; }
+    .xp-job { border-left: 2px solid #5695cd; padding-left: 0.5em; }
   </style>
 </head>
 
@@ -51,8 +82,8 @@
               <div class="info-item">
                 <span class="info-label"><i class="fa fa-envelope"></i></span>
                 <span class="info-text">
-                  <a href="mailto:davidwicho501998@gmail.com"
-                    style="text-decoration: none; color: inherit;">davidwicho501998@gmail.com</a>
+                  <a href="mailto:albert98.developer@gmail.com"
+                    style="color: #5695cd; text-decoration: underline;">albert98.developer@gmail.com <i class="fa fa-envelope" style="font-size:0.75em;"></i></a>
                 </span>
               </div>
 
@@ -60,25 +91,24 @@
               <div class="info-item">
                 <span class="info-label"><i class="fa fa-phone"></i></span>
                 <span class="info-text">
-                  <a href="tel:+5930992520223" style="text-decoration: none; color: inherit;">+593 0992520223</a>
+                  <a href="tel:+5930992520223" style="color: #5695cd; text-decoration: underline;">+593 0992520223 <i class="fa fa-phone" style="font-size:0.75em;"></i></a>
                 </span>
               </div>
               <!-- External link to online CV -->
               <div class="info-item">
                 <span class="info-label"><i class="fa fa-link"></i></span><span class="info-text"><a
-                    href="https://davidvique1998.github.io/CV/" target="_blank"> davidvique1998.github.io/CV/</a></span>
+                    href="https://david-dev-portfolio-2026.vercel.app/" target="_blank" style="color: #5695cd; text-decoration: underline;">david-dev-portfolio-2026.vercel.app <i class="fa fa-external-link" style="font-size:0.75em;"></i></a></span>
               </div>
               <!-- Graduation -->
               <div class="info-item">
-                <span class="info-label"><i class="fa fa-graduation-cap"></i></span><span class="info-text"> Software
-                  Engineer</span>
+                <span class="info-label"><i class="fa fa-graduation-cap"></i></span><span class="info-text">Software Engineer</span>
               </div>
               <!-- University -->
               <div class="info-item">
                 <span class="info-label"><i class="fa fa-university"></i></span>
                 <span class="info-text">
                   <a href="https://maps.app.goo.gl/Ra1Ccbn2gtUUXHb7A" target="_blank"
-                    style="text-decoration: none; color: inherit;">Universidad de las Fuerzas Armadas ESPE</a>
+                    style="color: #5695cd; text-decoration: underline;">Universidad de las Fuerzas Armadas ESPE <i class="fa fa-map-marker" style="font-size:0.75em;"></i></a>
                 </span>
               </div>
           </section>
@@ -91,11 +121,12 @@
               <div class="other">
                 <div class="other-info">
                   <p>
-                    Software engineer with experience in Full Stack and DevOps, specializing in creating and optimizing
-                    complex applications. Committed to continuous learning, I adapt quickly to new
-                    technologies to deliver scalable solutions. I integrate Artificial Intelligence to enhance user
-                    experience and dedicate myself to creative programming, including game and web design. Additionally,
-                    I have a natural ability to teach others, effectively sharing my knowledge and skills as a teacher.
+                    Multidisciplinary developer with experience in Full Stack and DevOps, specializing in the creation
+                    and optimization of enterprise applications. Around 6 months of Web AI developer experience at
+                    Pinecrest Consulting, creating and implementing RAG, OCR, and LLM solutions across local and AWS
+                    cloud architectures, using Cursor to accelerate delivery. Passionate about integrating AI to enhance
+                    user experiences, I combine creativity and technology in game and web design. Natural ability to
+                    teach, sharing knowledge and skills to foster team growth.
                   </p>
                 </div>
               </div>
@@ -107,75 +138,46 @@
                 <i class="fa fa-briefcase"></i>
                 <h2>Work Experience</h2>
               </div>
-
-              <div class="xp-item">
-                <div class="xp-job">
-                  Full Stack Developer
-                  <span>@Fenix Corp</span><br /><small>Latacunga, Ecuador</small><br />
-                  <small>(React, Node JS Express, LangChain Aibitat RAG)</small>
-                </div>
-                <div class="xp-date">May. 2024 – Present</div>
-                <div class="xp-detail">
-                  <ul>
-                    <li>
-                      ChatBot LLM with access to corporate knowledge bases with integration to Moodle, SharePoint, TikTok, YouTube
-                      and more.
-                    </li>
-                  </ul>
-                </div>
+              <div style="margin: 0 0 0.8em; border-left: 3px solid #5695cd; padding-left: 0.6em;">
+                <span style="font-size: 1.03em; font-weight: 700; color: #5695cd; text-transform: uppercase; letter-spacing: 0.06em;">AI Web Developer</span>
               </div>
 
               <div class="xp-item">
-                <div class="xp-job">
-                  Full Stack/DevOps Developer
-                  <span>@Taurhus Capacitaciones</span><br /><small>Illuchi, Ecuador</small><br />
-                  <small>(Laravel, Mix-Vue.js, CI/CD Github Actions)</small>
-                </div>
+                <div class="xp-job">Full Stack Developer <span>@Pinecrest Consulting — Texas, United States</span></div>
+                <div class="xp-date">Sept. 2025 – Present</div>
+                <div class="extra-info" style="margin-bottom: 0.4em;"><small>NestJS · Next.js · AWS Lambda · SST · GitHub Actions · OpenAI · OCR · Cursor · Claude Code</small></div>
+                <p style="font-size: 0.96em; margin-bottom: 0.3em;">Developed CT (commission analyzer for 52 companies with dynamic prompts, OCR, and queue-based flows) and UMI (multi-platform meeting integration with transcription, AI chat, and third-party uploads) as serverless solutions on AWS Lambda with GitHub Actions CI/CD. Implemented social media scheduling automation via Metricool API.</p>
+              </div>
+
+              <div class="xp-item">
+                <div class="xp-job">AI/Web Bot Developer <span>@D2V — Germany</span></div>
+                <div class="xp-date">Aug. 2025 – Oct. 2025</div>
+                <div class="extra-info" style="margin-bottom: 0.4em;"><small>RAG · Mistral · Notion API · Oura Ring API · Bolt · Lovable</small></div>
+                <p style="font-size: 0.96em; margin-bottom: 0.3em;">RAG Voice Chat, Notion–Mistral automations, Oura Ring API integrations and custom AI tooling under strict NDA.</p>
+              </div>
+
+              <div class="xp-item">
+                <div class="xp-job">Full Stack/DevOps Developer <span>@Relatividad IA — Quito, Ecuador</span></div>
+                <div class="xp-date">Dec. 2024 – Aug. 2025</div>
+                <div class="extra-info" style="margin-bottom: 0.4em;"><small>React · Next.js · N8N · AWS ECS · Evolution API · CRM · Cursor</small></div>
+                <p style="font-size: 0.96em; margin-bottom: 0.3em;">Logistic Tracker SaaS with N8N automation, Evolution API, CRM, and deployment on AWS ECS.</p>
+              </div>
+
+              <div class="xp-item">
+                <div class="xp-job">Full Stack/DevOps Developer <span>@Fenix Corp — Latacunga, Ecuador</span></div>
+                <div class="xp-date">May. 2024 – Dec. 2024</div>
+                <div class="extra-info" style="margin-bottom: 0.4em;"><small>React · Node.js · Express · LangChain · Grafana · Apache Guacamole · Moodle</small></div>
+                <p style="font-size: 0.96em; margin-bottom: 0.3em;">ChatBot LLM with access to corporate knowledge bases, integrated with Moodle, SharePoint, TikTok, YouTube and more.</p>
+              </div>
+              <div style="margin: 0 0 0.8em; border-left: 3px solid #5695cd; padding-left: 0.6em;">
+                <span style="font-size: 1.03em; font-weight: 700; color: #5695cd; text-transform: uppercase; letter-spacing: 0.06em;">Web &amp; Game Developer</span>
+              </div>
+              <div class="xp-item">
+                <div class="xp-job">Full Stack/DevOps Developer <span>@Taurhus Capacitaciones — Illuchi, Ecuador</span></div>
                 <div class="xp-date">Apr. 2023 – May. 2024</div>
-                <div class="xp-detail">
-                  <ul>
-                    <li>
-                      LMS for private security guard students.
-                    </li>
-                  </ul>
-                </div>
+                <div class="extra-info" style="margin-bottom: 0.4em;"><small>Laravel · Mix-Vue.js · CI/CD · GitHub Actions</small></div>
+                <p style="font-size: 0.96em; margin-bottom: 0.3em;">LMS for private security guard students.</p>
               </div>
-
-              <div class="xp-item">
-                <div class="xp-job">
-                  Full Stack Developer <span>@Seneca Corp</span><br /><small>Quito, Ecuador</small><br />
-                  <small>(Vue.js, Laravel)</small>
-                </div>
-                <div class="xp-date">Jan. 2023 - Apr. 2023</div>
-                <div class="xp-detail">
-                  <ul>
-                    <li>
-                      Web application for condominium management, focused on agile development practices using SCRUM.
-                    </li>
-                    <li>
-                      Web application for Agrocalidad, updating the login system and digital signature.
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              <div class="xp-item">
-                <div class="xp-job">
-                  Game Engine/AI Developer
-                  <span>@ESPE @Taurhus Capacitaciones</span><br /><small>Belisario Quevedo, Ecuador</small><br />
-                  <small>(Unity, Python, OpenCV, Kinect 2, ESP32)</small>
-                </div>
-                <div class="xp-date">Aug. 2021 – Apr. 2023</div>
-                <div class="xp-detail">
-                  <ul>
-                    <li>
-                      Shooting range simulator with shot detection, intelligent classification, and scoring of the
-                      trainee's shot position.
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
             </div>
           </section>
         </div>
@@ -183,7 +185,7 @@
           <section class="resume__section resume__skills">
             <div class="resume__content">
               <div class="resume__section-avatar">
-                <img src="images/david.jpg" alt="David Almeida" />
+                <img src="images/david2.png" alt="David Almeida" />
               </div>
             </div>
           </section>
@@ -215,44 +217,98 @@
               <div class="resume__text">
                 <div class="extra">
                   <div class="extra-info">
-                    LLM<br /><small>LangChain · AIbitat · OpenAI · Ollama</small>
+                    AI Tools<br /><small>Claude Code · Cursor · MCPs</small>
                   </div>
                 </div>
                 <div class="extra">
                   <div class="extra-info">
-                    RAG<br /><small>Qdrant · LanceDB · Chroma</small>
+                    LLM<br /><small>OpenAI · Mistral · LangChain · N8N · mem0</small>
                   </div>
                 </div>
                 <div class="extra">
                   <div class="extra-info">
-                    DevOps<br /><small>Docker · Shell · AWS · CI/CD · GitHub Tasks</small>
+                    RAG<br /><small>PostgreSQL · Qdrant</small>
                   </div>
                 </div>
                 <div class="extra">
                   <div class="extra-info">
-                    FullStack<br /><small>Next JS, Laravel Mix-Vue.js</small>
+                    DevOps<br /><small>Docker · GitHub Actions · AWS · SST</small>
                   </div>
                 </div>
                 <div class="extra">
                   <div class="extra-info">
-                    Frontend<br /><small>Angular </small>
+                    FullStack<br /><small>NestJS · Next.js · Laravel · Vue.js</small>
                   </div>
                 </div>
                 <div class="extra">
                   <div class="extra-info">
-                    Backend<br /><small>Django · Spring Boot · .NET</small>
-                  </div>
-                </div>
-
-                <div class="extra">
-                  <div class="extra-info">
-                    Databases<br /><small>PostgreSQL · MySQL · MongoDB · Firebase · SQLite</small>
+                    Frontend<br /><small>React · Angular</small>
                   </div>
                 </div>
                 <div class="extra">
                   <div class="extra-info">
-                    Game Engine<br /><small>Unity · Roblox · Scratch</small>
+                    Backend<br /><small>Node.js · Express · Spring Boot · Python · .NET · Java</small>
                   </div>
+                </div>
+                <div class="extra">
+                  <div class="extra-info">
+                    Databases<br /><small>PostgreSQL · MySQL · MongoDB · SQLite</small>
+                  </div>
+                </div>
+                <div class="extra">
+                  <div class="extra-info">
+                    Game Engine<br /><small>Unity</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="resume__section">
+            <div class="resume__content">
+              <div class="resume__section-title">
+                <i class="fa fa-code-fork"></i>
+                <h2>Evolution</h2>
+              </div>
+              <div style="position: relative; padding-left: 1.1em; border-left: 2px solid #d1d9e1; margin-top: 0.2em;">
+                <div style="position: relative; margin-bottom: 0.55em;">
+                  <div style="position: absolute; left: -1.45em; top: 0.25em; width: 0.55em; height: 0.55em; background: #5695cd; border-radius: 50%;"></div>
+                  <div style="font-size: 0.82em; color: #5695cd; font-weight: 700; line-height: 1.2;">2018</div>
+                  <div style="font-size: 0.78em; color: #555;">Java · GIMP</div>
+                </div>
+                <div style="position: relative; margin-bottom: 0.55em;">
+                  <div style="position: absolute; left: -1.45em; top: 0.25em; width: 0.55em; height: 0.55em; background: #5695cd; border-radius: 50%;"></div>
+                  <div style="font-size: 0.82em; color: #5695cd; font-weight: 700; line-height: 1.2;">2019</div>
+                  <div style="font-size: 0.78em; color: #555;">.NET · C#</div>
+                </div>
+                <div style="position: relative; margin-bottom: 0.55em;">
+                  <div style="position: absolute; left: -1.45em; top: 0.25em; width: 0.55em; height: 0.55em; background: #5695cd; border-radius: 50%;"></div>
+                  <div style="font-size: 0.82em; color: #5695cd; font-weight: 700; line-height: 1.2;">2021</div>
+                  <div style="font-size: 0.78em; color: #555;">Node.js · Angular · MongoDB</div>
+                </div>
+                <div style="position: relative; margin-bottom: 0.55em;">
+                  <div style="position: absolute; left: -1.45em; top: 0.25em; width: 0.55em; height: 0.55em; background: #5695cd; border-radius: 50%;"></div>
+                  <div style="font-size: 0.82em; color: #5695cd; font-weight: 700; line-height: 1.2;">2022</div>
+                  <div style="font-size: 0.78em; color: #555;">Spring Boot · PostgreSQL</div>
+                </div>
+                <div style="position: relative; margin-bottom: 0.55em;">
+                  <div style="position: absolute; left: -1.45em; top: 0.25em; width: 0.55em; height: 0.55em; background: #5695cd; border-radius: 50%;"></div>
+                  <div style="font-size: 0.82em; color: #5695cd; font-weight: 700; line-height: 1.2;">2023</div>
+                  <div style="font-size: 0.78em; color: #555;">Unity · Python · Laravel · Vue.js</div>
+                </div>
+                <div style="position: relative; margin-bottom: 0.55em;">
+                  <div style="position: absolute; left: -1.45em; top: 0.25em; width: 0.55em; height: 0.55em; background: #5695cd; border-radius: 50%;"></div>
+                  <div style="font-size: 0.82em; color: #5695cd; font-weight: 700; line-height: 1.2;">2024</div>
+                  <div style="font-size: 0.78em; color: #555;">React · LangChain · Docker · Cursor</div>
+                </div>
+                <div style="position: relative; margin-bottom: 0.55em;">
+                  <div style="position: absolute; left: -1.45em; top: 0.25em; width: 0.55em; height: 0.55em; background: #5695cd; border-radius: 50%;"></div>
+                  <div style="font-size: 0.82em; color: #5695cd; font-weight: 700; line-height: 1.2;">2025</div>
+                  <div style="font-size: 0.78em; color: #555;">NestJS · Next.js · AWS · OpenAI · N8N · GitHub Actions · Claude Code</div>
+                </div>
+                <div style="position: relative;">
+                  <div style="position: absolute; left: -1.45em; top: 0.25em; width: 0.55em; height: 0.55em; background: #5695cd; border-radius: 50%; box-shadow: 0 0 0 2px #aacae6;"></div>
+                  <div style="font-size: 0.82em; color: #5695cd; font-weight: 700; line-height: 1.2;">2026</div>
+                  <div style="font-size: 0.78em; color: #555;">SST · mem0 · MCPs</div>
                 </div>
               </div>
             </div>
@@ -266,135 +322,62 @@
     <div class="one-column resume">
       <section class="resume__section resume__header"></section>
       <div class="resume__columns">
-        <!-- -->
         <div class="resume__main" style="width: 100%;">
           <section class="resume__section resume__experience">
             <div class="resume__content">
-
               <div class="xp-item">
-                <div class="xp-job">
-                  Web Application Developer <span>@Province of Cotopaxi</span><br /><small>La
-                    Victoria, Ecuador</small> <br />
-                  <small>(Angular, Spring Boot, PostgreSQL)</small>
-                </div>
-                <div class="xp-date">Dec. 2021 - Mar. 2022</div>
-                <div class="xp-detail">
-                  <ul>
-                    <li>
-                      Web application for managing production and marketing of handmade tiles, an accessible platform
-                      for artisans in the Cotopaxi province, offering an intuitive interface.
-                    </li>
-                  </ul>
-                </div>
+                <div class="xp-job">Game Engine/AI Developer <span>@ESPE · Taurhus Capacitaciones — Belisario Quevedo, Ecuador</span></div>
+                <div class="xp-date">Aug. 2021 – Apr. 2023</div>
+                <div class="extra-info" style="margin-bottom: 0.4em;"><small>Unity · Python · OpenCV · Kinect 2 · ESP32</small></div>
+                <p style="font-size: 0.96em; margin-bottom: 0.3em;">Shooting range simulator with shot detection, intelligent classification, and scoring of the trainee's shot position.</p>
               </div>
-
               <div class="xp-item">
-                <div class="xp-job">
-                  Full Stack Developer
-                  <span>@GCI: Internship</span><br /><small>Universidad de las Fuerzas
-                    Espe</small> <br />
-                  <small>(Angular, Node.js, MongoDB)</small>
-                </div>
-                <div class="xp-date">Feb. 2021 - Jul. 2021</div>
-                <div class="xp-detail">
-                  <ul>
-                    <li>
-                      Web application for product and service management, as part of my university internship with Agile
-                      Methodology SCRUM.
-                    </li>
-                  </ul>
-                </div>
+                <div class="xp-job">Web Application Developer <span>@Province of Cotopaxi — La Victoria, Ecuador</span></div>
+                <div class="xp-date">Dec. 2021 – Mar. 2022</div>
+                <div class="extra-info" style="margin-bottom: 0.4em;"><small>Angular · Spring Boot · PostgreSQL</small></div>
+                <p style="font-size: 0.96em; margin-bottom: 0.3em;">Web application for managing production and marketing of handmade tiles, an accessible platform for artisans in the Cotopaxi province.</p>
               </div>
-
+              <div class="xp-item">
+                <div class="xp-job">Full Stack Developer <span>@GCI: Internship — Universidad de las Fuerzas Armadas ESPE</span></div>
+                <div class="xp-date">Feb. 2021 – Jul. 2021</div>
+                <div class="extra-info" style="margin-bottom: 0.4em;"><small>Angular · Node.js · MongoDB</small></div>
+                <p style="font-size: 0.96em; margin-bottom: 0.3em;">Web application for product and service management as part of my university internship with Agile Methodology SCRUM.</p>
+              </div>
               <div class="resume__section-title">
-                <i class="fa fa-briefcase"></i>
+                <i class="fa fa-graduation-cap"></i>
                 <h2>Educational Background</h2>
               </div>
-
-              <div class="xp-item">
-                <div class="xp-job">
-                  Programming Instructor <span>@Algorithmics International School</span><br /><small>Latacunga,
-                    Ecuador
-                    - Fenix Corp</small>
-                  <br />
-                  <small>(Python, Visual Programming, Game Design)</small>
-                </div>
-                <div class="xp-date">Sept. 2023 – Present</div>
-                <!-- Replace "Start Date" with your actual start date -->
-                <div class="xp-detail">
-                  <ul>
-                    <li>
-                      Teaching programming to children and young people aged 6 to 17 in topics such as Python, visual
-                      programming, and video game design, following the Algorithmics curriculum. Implementation of
-                      face-to-face classes in Latacunga and virtual classes for students across Ecuador.
-                    </li>
-                  </ul>
-                </div>
+              <div style="margin: 0 0 0.8em; border-left: 3px solid #5695cd; padding-left: 0.6em;">
+                <span style="font-size: 1.03em; font-weight: 700; color: #5695cd; text-transform: uppercase; letter-spacing: 0.06em;">Teacher &amp; Academic Projects</span>
               </div>
               <div class="xp-item">
-                <div class="xp-job">
-                  Backend Developer <span>@Universidad de las Fuerzas
-                    Armadas ESPE</span><br /><small>Belisario Quevedo, Latacunga</small>
-                  <br />
-                  <small>(Node.js, MongoDB, MADA, SWAGGER)</small>
-                </div>
-                <div class="xp-date">Jan. 2021 - Mar. 2021</div>
-                <div class="xp-detail">
-                  <ul>
-                    <li>
-                      REST API as a Spanish to Kichwa translator dictionary.
-                    </li>
-                  </ul>
-                </div>
+                <div class="xp-job">Programming Instructor <span>@Algorithmics International School — Latacunga, Ecuador</span></div>
+                <div class="xp-date">Sept. 2023 – Oct. 2024</div>
+                <div class="extra-info" style="margin-bottom: 0.4em;"><small>Python · Visual Programming · Game Design</small></div>
+                <p style="font-size: 0.96em; margin-bottom: 0.3em;">Teaching programming to children and young people aged 6 to 17 in Python, visual programming, and game design. Face-to-face classes in Latacunga and virtual classes across Ecuador.</p>
               </div>
               <div class="xp-item">
-                <div class="xp-job">
-                  .NET Application Developer
-                  <span>@Unidad Educativa La Salle</span><br /><small>Latacunga, Ecuador</small>
-                  <br />
-                  <small>(.NET, C#, GIMP)</small>
-                </div>
-                <div class="xp-date">Sept 2019 - Feb 2020</div>
-                <div class="xp-detail">
-                  <ul>
-                    <li>
-                      Desktop application for education of children aged 4 to 6, with interactive
-                      stories, magic board, and riddle cards.
-                    </li>
-                  </ul>
-                </div>
+                <div class="xp-job">Backend Developer <span>@Universidad de las Fuerzas Armadas ESPE — Belisario Quevedo, Latacunga</span></div>
+                <div class="xp-date">Jan. 2021 – Mar. 2021</div>
+                <div class="extra-info" style="margin-bottom: 0.4em;"><small>Node.js · MongoDB · MADA · Swagger</small></div>
+                <p style="font-size: 0.96em; margin-bottom: 0.3em;">REST API as a Spanish to Kichwa translator dictionary.</p>
               </div>
               <div class="xp-item">
-                <div class="xp-job">
-                  Programming Teacher - International Baccalaureate <span>@Unidad Educativa La
-                    Salle</span><br /><small>Latacunga, Ecuador</small>
-                </div>
+                <div class="xp-job">.NET Application Developer <span>@Unidad Educativa La Salle — Latacunga, Ecuador</span></div>
                 <div class="xp-date">Sept. 2019 – Feb. 2020</div>
-                <div class="xp-detail">
-                  <ul>
-                    <li>
-                      Programming classes for International Baccalaureate students, focused on creating projects and
-                      their evaluation based on academic criteria given by the Educational Unit.
-                    </li>
-                  </ul>
-                </div>
+                <div class="extra-info" style="margin-bottom: 0.4em;"><small>.NET · C# · GIMP</small></div>
+                <p style="font-size: 0.96em; margin-bottom: 0.3em;">Desktop application for education of children aged 4 to 6, with interactive stories, magic board, and riddle cards.</p>
               </div>
               <div class="xp-item">
-                <div class="xp-job">
-                  JAVA Application Developer <span>@Universidad de las
-                    Fuerzas Armadas ESPE</span><br /><small>Belisario Quevedo, Ecuador</small>
-                  <br />
-                  <small>(Java, GIMP)</small>
-                </div>
-                <div class="xp-date">Sept 2018 - Feb 2019</div>
-                <div class="xp-detail">
-                  <ul>
-                    <li>
-                      Development of a Java desktop educational application designed for learning the Quichua language
-                      through games with different difficulty levels.
-                    </li>
-                  </ul>
-                </div>
+                <div class="xp-job">Programming Teacher - IB <span>@Unidad Educativa La Salle — Latacunga, Ecuador</span></div>
+                <div class="xp-date">Sept. 2019 – Feb. 2020</div>
+                <p style="font-size: 0.96em; margin-bottom: 0.3em;">Programming classes for International Baccalaureate students, focused on creating projects evaluated by academic criteria.</p>
+              </div>
+              <div class="xp-item">
+                <div class="xp-job">JAVA Application Developer <span>@Universidad de las Fuerzas Armadas ESPE — Belisario Quevedo, Ecuador</span></div>
+                <div class="xp-date">Sept. 2018 – Feb. 2019</div>
+                <div class="extra-info" style="margin-bottom: 0.4em;"><small>Java · GIMP</small></div>
+                <p style="font-size: 0.96em; margin-bottom: 0.3em;">Java desktop educational application for learning the Quichua language through games with different difficulty levels.</p>
               </div>
             </div>
           </section>
@@ -404,11 +387,12 @@
   </div>
 
   <div class="sheet">
-    <div class="one-column resume">
+    <div class="two-column resume">
       <section class="resume__section resume__header"></section>
       <div class="resume__columns">
-        <div class="resume__main" style="width: 100%;">
-          <section class="resume__section resume__experience">
+        <!-- Top row: Certifications (50%) + Freelancing (50%) -->
+        <div class="resume__main" style="width: 50%;">
+          <section class="resume__section">
             <div class="resume__content">
               <div class="resume__section-title">
                 <i class="fa fa-certificate"></i>
@@ -417,28 +401,51 @@
               <div class="xp-item">
                 <div class="xp-detail">
                   <ul>
-                    <li><a href="docs/algorithmics_basic.pdf" target="_blank">Algorithmics Basic (PDF)</a></li>
-                    <li><a href="docs/algorithmics_python.pdf" target="_blank">Algorithmics Python (PDF)</a></li>
-                    <li><a href="docs/basic_augmented_reality.pdf" target="_blank">Basic Augmented Reality (PDF)</a>
-                    </li>
-                    <li><a href="docs/cocktail_workshop.pdf" target="_blank">Cocktail Workshop (PDF)</a></li>
-                    <li><a href="docs/scrum_360.pdf" target="_blank">Scrum 360º (PDF)</a></li>
-                    <li><a href="docs/espe_b2.pdf" target="_blank">ESPE B2 (PDF)</a></li>
-                    <li><a href="docs/ilustrator.pdf" target="_blank">Adobe Illustrator (PDF)</a></li>
-                    <li><a href="docs/bica_2023.pdf" target="_blank">BICA 2023 (PDF)</a></li>
-                    <!-- Enlace a todos los certificados en Google Drive -->
-                    <li>
-                      <b>View all certificates:</b>
-                      <a href="https://drive.google.com/drive/folders/1LahhI_-xdrv_8ldhXIXR-ofnVdKmcA90?usp=sharing"
-                        target="_blank">Access Certificates</a>
-                      <a href="https://drive.google.com/drive/folders/1LahhI_-xdrv_8ldhXIXR-ofnVdKmcA90?usp=sharing"
-                        target="_blank">https://drive.google.com/drive/folders/1LahhI_-xdrv_8ldhXIXR-ofnVdKmcA90?usp=sharing</a>
-                    </li>
+                    <li><a href="docs/algorithmics_basic.pdf" target="_blank" style="color: #5695cd; text-decoration: underline;">Algorithmics Basic <i class="fa fa-file-pdf-o" style="font-size:0.8em;"></i></a></li>
+                    <li><a href="docs/algorithmics_python.pdf" target="_blank" style="color: #5695cd; text-decoration: underline;">Algorithmics Python <i class="fa fa-file-pdf-o" style="font-size:0.8em;"></i></a></li>
+                    <li><a href="docs/basic_augmented_reality.pdf" target="_blank" style="color: #5695cd; text-decoration: underline;">Basic Augmented Reality <i class="fa fa-file-pdf-o" style="font-size:0.8em;"></i></a></li>
+                    <li><a href="docs/cocktail_workshop.pdf" target="_blank" style="color: #5695cd; text-decoration: underline;">Cocktail Workshop <i class="fa fa-file-pdf-o" style="font-size:0.8em;"></i></a></li>
+                    <li><a href="docs/scrum_360.pdf" target="_blank" style="color: #5695cd; text-decoration: underline;">Scrum 360º <i class="fa fa-file-pdf-o" style="font-size:0.8em;"></i></a></li>
+                    <li><a href="docs/espe_b2.pdf" target="_blank" style="color: #5695cd; text-decoration: underline;">ESPE B2 <i class="fa fa-file-pdf-o" style="font-size:0.8em;"></i></a></li>
+                    <li><a href="docs/ilustrator.pdf" target="_blank" style="color: #5695cd; text-decoration: underline;">Adobe Illustrator <i class="fa fa-file-pdf-o" style="font-size:0.8em;"></i></a></li>
+                    <li><a href="docs/bica_2023.pdf" target="_blank" style="color: #5695cd; text-decoration: underline;">BICA 2023 <i class="fa fa-file-pdf-o" style="font-size:0.8em;"></i></a></li>
+                    <li><a href="https://drive.google.com/file/d/140VmEPWU4BVavF2qu4-wsBTt91GA3d_Q/view?usp=sharing" target="_blank" style="color: #5695cd; text-decoration: underline;">Claude Code in Action <i class="fa fa-file-pdf-o" style="font-size:0.8em;"></i></a></li>
                   </ul>
                 </div>
               </div>
             </div>
           </section>
+        </div>
+        <div class="resume__side" style="width: 50%; padding-left: 2em;">
+          <section class="resume__section">
+            <div class="resume__content">
+              <div class="resume__section-title">
+                <i class="fa fa-globe"></i>
+                <h2>Freelancing</h2>
+              </div>
+              <div class="xp-item">
+                <div class="xp-job" style="font-size: 1em;">
+                  Entropía N8N Studio
+                </div>
+                <div class="xp-date">2025 – Present</div>
+                <div class="extra-info" style="margin-bottom: 0.6em;">
+                  <small>N8N · WhatsApp · CRM · AI Chatbots</small>
+                </div>
+                <p style="font-size: 0.96em; margin-bottom: 0.5em;">
+                  AI chatbot automation agency. Build N8N flows connected to WhatsApp, CRMs, and business APIs for lead capture and client management.
+                </p>
+                <div class="info-item">
+                  <span class="info-label"><i class="fa fa-link"></i></span>
+                  <span class="info-text">
+                    <a href="https://entropia-n8n-studio.vercel.app/es" target="_blank" style="color: #5695cd; text-decoration: underline;">entropia-n8n-studio.vercel.app <i class="fa fa-external-link" style="font-size:0.75em;"></i></a>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+        <!-- Full-width row: Publications + References -->
+        <div style="clear: both; width: 100%;">
           <section class="resume__section resume__publications">
             <div class="resume__content">
               <div class="resume__section-title">
@@ -448,22 +455,12 @@
               <div class="xp-item">
                 <div class="xp-detail">
                   <ul>
-                    <li>
-                      David Alberto Vique Almeida, Luis Armando Chicaiza Conteron, José Luis Carrillo Medina, Edison Gonzalo Espinosa Gallardo.
-                      <i>Prediction of the Correct Firing Position with a Pistol Based on a MANFIS Model</i>.
-                      Biologically Inspired Cognitive Architectures 2023. Studies in Computational Intelligence,
-                      Volume 1130, Springer, 2024.
-                      <a href="https://doi.org/10.1007/978-3-031-50381-8_99" target="_blank">Access paper</a>
-                      <!-- URL as text-->
-                      <a href="https://doi.org/10.1007/978-3-031-50381-8_99" target="_blank">https://doi.org/10.1007/978-3-031-50381-8_99</a>
-                    </li>
-                    
+                    <li>David Alberto Vique Almeida, Luis Armando Chicaiza Conteron, José Luis Carrillo Medina, Edison Gonzalo Espinosa Gallardo. <i>Prediction of the Correct Firing Position with a Pistol Based on a MANFIS Model</i>. Biologically Inspired Cognitive Architectures 2023. Studies in Computational Intelligence, Volume 1130, Springer, 2024. <a href="https://doi.org/10.1007/978-3-031-50381-8_99" target="_blank" style="color: #5695cd; text-decoration: underline;">doi.org/10.1007/978-3-031-50381-8_99 <i class="fa fa-external-link" style="font-size:0.8em;"></i></a></li>
                   </ul>
                 </div>
               </div>
             </div>
           </section>
-
           <section class="resume__section resume__references">
             <div class="resume__content">
               <div class="resume__section-title">
@@ -471,23 +468,31 @@
                 <h2>References</h2>
               </div>
               <div class="reference-item">
-                <b>Jorge Anchatuña</b> - CEO at Fenix Corp. <span>+593 999845753</span>
+                <b>Eli Tabaria</b> - CEO at Pinecrest Consulting. <span><a href="tel:+19729894928" style="color: #5695cd; text-decoration: underline;">+1 (972) 989-4928 <i class="fa fa-phone" style="font-size:0.75em;"></i></a></span>
               </div>
               <div class="reference-item">
-                <b>Maritza Andrade</b> - CEO at Algorithmics. <span>+593 984015619</span>
+                <b>Shaine Rucker</b> - Product AI Manager, Pinecrest Consulting. <span><a href="tel:+18138049334" style="color: #5695cd; text-decoration: underline;">+1 (813) 804-9334 <i class="fa fa-phone" style="font-size:0.75em;"></i></a></span>
               </div>
               <div class="reference-item">
-                <b>Wendy Esposito</b> - Manager at Taurhus Cía. Ltda. <span>+593 997393531</span>
+                <b>Emilio Rosado</b> - CEO at Relatividad IA. <span><a href="tel:+593992722256" style="color: #5695cd; text-decoration: underline;">+593 992722256 <i class="fa fa-phone" style="font-size:0.75em;"></i></a></span>
               </div>
               <div class="reference-item">
-                <b>Gabriela Campoverde</b> - Engineer in automation GCI.
-                <span>+593 979154409</span>
+                <b>Jorge Anchatuña</b> - CEO at Fenix Corp. <span><a href="tel:+593999845753" style="color: #5695cd; text-decoration: underline;">+593 999845753 <i class="fa fa-phone" style="font-size:0.75em;"></i></a></span>
               </div>
               <div class="reference-item">
-                <b>Edison Espinoza</b> - Professor at ESPE.<span>+593 984272898</span>
+                <b>Maritza Andrade</b> - CEO at Algorithmics. <span><a href="tel:+593984015619" style="color: #5695cd; text-decoration: underline;">+593 984015619 <i class="fa fa-phone" style="font-size:0.75em;"></i></a></span>
               </div>
               <div class="reference-item">
-                <b>Luis Chicaiza</b> - Software Engineer. <span>+593 959743877</span>
+                <b>Wendy Esposito</b> - Manager at Taurhus Cía. Ltda. <span><a href="tel:+593997393531" style="color: #5695cd; text-decoration: underline;">+593 997393531 <i class="fa fa-phone" style="font-size:0.75em;"></i></a></span>
+              </div>
+              <div class="reference-item">
+                <b>Gabriela Campoverde</b> - Engineer in automation GCI. <span><a href="tel:+593979154409" style="color: #5695cd; text-decoration: underline;">+593 979154409 <i class="fa fa-phone" style="font-size:0.75em;"></i></a></span>
+              </div>
+              <div class="reference-item">
+                <b>Edison Espinoza</b> - Professor at ESPE. <span><a href="tel:+593984272898" style="color: #5695cd; text-decoration: underline;">+593 984272898 <i class="fa fa-phone" style="font-size:0.75em;"></i></a></span>
+              </div>
+              <div class="reference-item">
+                <b>Luis Chicaiza</b> - Software Engineer. <span><a href="tel:+593959743877" style="color: #5695cd; text-decoration: underline;">+593 959743877 <i class="fa fa-phone" style="font-size:0.75em;"></i></a></span>
               </div>
             </div>
           </section>
