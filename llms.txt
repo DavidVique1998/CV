@@ -1,0 +1,44 @@
+# David Vique — Senior Full Stack AI Engineer | CV
+
+> CV: https://davidvique1998.github.io/CV/
+> Portfolio: https://david-dev-portfolio-2026.vercel.app/
+
+## About
+
+David Alberto Vique Almeida is a Senior Full Stack AI Engineer based in Riobamba, Ecuador.
+He has 5+ years of experience building AI-driven SaaS products, automation pipelines, voice agents,
+and serverless cloud systems — with end-to-end ownership across frontend, backend, DevOps, and AI integrations.
+He delivers production systems for US and European clients and is available for remote engagements.
+
+He completed a triathlon (1.5 km swim · 40 km bike · 10 km run) and co-authored a research paper
+published at Springer BICA 2023 (Volume 1130).
+
+## Skills
+
+- **AI / LLM / Agents:** OpenAI · Claude · Mistral · LangChain · RAG · OCR · mem0 · MCPs
+- **Automation / CRM / Voice:** N8N · GoHighLevel · ElevenLabs · Twilio · Retell AI · WhatsApp API
+- **Frontend:** React · Next.js · Angular · Vue.js
+- **Backend:** NestJS · Node.js · Express · Laravel · Python · Spring Boot · .NET
+- **Cloud / DevOps:** AWS Lambda · S3 · ECS · API Gateway · SST · Terraform · Docker · GitHub Actions
+- **Databases:** PostgreSQL · MySQL · MongoDB · Qdrant · SQLite
+- **AI Tools:** Claude Code · Cursor · Bolt · Lovable
+
+## Work Experience
+
+- **Full Stack AI Developer @ Pinecrest Consulting** (Sept. 2025 – May 2026) — Built CT, UMI, and BMC as serverless AWS Lambda products with two-step dynamic prompt architectures, OCR, RAG chat, mem0 memory, and full SEO stacks.
+- **Full Stack AI / DevOps Developer @ Relatividad IA** (Dec. 2024 – Aug. 2025) — Logistic Tracker SaaS, WhatsApp CRM, ElevenLabs + Twilio + Retell AI voice agents, GoHighLevel CRM integrations.
+- **AI/Web Bot Developer @ D2V, Germany** (Aug. 2025 – Oct. 2025) — RAG Voice Chat, Notion–Mistral automations, Oura Ring API. NDA.
+- **Full Stack/DevOps Developer @ Fenix Corp** (May 2024 – Dec. 2024) — ChatBot LLM with corporate knowledge bases, Grafana, Moodle LMS.
+- **Programming Instructor @ Algorithmics** (Sept. 2023 – Oct. 2024) — Python, visual programming, game design for ages 6–17.
+
+## Freelancing
+
+- **Entropía N8N Studio** (2025 – Present) — AI automation agency. N8N agentic flows, GoHighLevel embedded apps, ElevenLabs voice cloning, Twilio SMS/voice, Retell AI voice agents, WhatsApp CRM funnels.
+
+## Contact
+
+- Email: albert98.developer@gmail.com
+- Phone: +593 992 520 223
+- GitHub: https://github.com/DavidVique1998
+- LinkedIn: https://www.linkedin.com/in/david-vique-b29941206
+- Location: Riobamba, Ecuador (Remote)

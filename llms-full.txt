@@ -1,0 +1,117 @@
+# David Vique — Senior Full Stack AI Engineer | Full Profile
+
+> CV: https://davidvique1998.github.io/CV/
+> Portfolio: https://david-dev-portfolio-2026.vercel.app/
+> Cover Letter: https://davidvique1998.github.io/CV/cover_letter.txt
+
+## Identity
+
+- **Full name:** David Alberto Vique Almeida
+- **Title:** Senior Full Stack AI Engineer
+- **Location:** Riobamba, Ecuador (available remote — US / Europe time zones)
+- **Email:** albert98.developer@gmail.com
+- **Phone:** +593 992 520 223
+- **Experience:** 5+ years
+- **Languages:** Spanish (Native) · English (C1) · French (A1)
+
+## Summary
+
+Senior Full Stack AI Engineer with 5+ years building AI-driven SaaS products, automation pipelines,
+voice agents, and serverless cloud systems. End-to-end ownership across frontend (React, Next.js),
+backend (NestJS, Node.js), DevOps (AWS Lambda, SST, Docker, GitHub Actions), and AI integrations
+(OpenAI, Claude, LangChain, RAG, OCR, voice agents). Delivered production systems for US and European
+clients — dynamic LLM architectures, AI voice agents, CRM automations, and serverless cloud deployments.
+Comfortable working directly with founders and non-technical stakeholders.
+
+## Full Skill Set
+
+**AI / LLM / Agents**
+OpenAI · Claude · Mistral · LangChain · RAG · OCR · mem0 · MCPs · Whisper · Embeddings · Vector DBs
+
+**Automation / CRM / Voice**
+N8N · GoHighLevel (GHL) · ElevenLabs · Twilio · Retell AI · WhatsApp API · Evolution API · Metricool API
+
+**Frontend**
+React · Next.js · Angular · Vue.js · Tailwind CSS · Radix UI · Vite · Three.js
+
+**Backend**
+NestJS · Node.js · Express · Laravel · Python · Spring Boot · .NET · TypeORM · Passport · Swagger
+
+**Cloud / DevOps / Infrastructure**
+AWS Lambda · S3 · ECS · RDS · API Gateway · CloudFront · SST v4 · Terraform · Docker · GitHub Actions · Turborepo · MinIO
+
+**Databases**
+PostgreSQL · MySQL · MongoDB · Qdrant · SQLite · Redis
+
+**AI Tooling**
+Claude Code · Cursor · Bolt · Lovable
+
+## Detailed Work Experience
+
+### Full Stack AI Developer @ Pinecrest Consulting — Texas, United States
+**Sept. 2025 – May 2026**
+Stack: NestJS · Next.js · React 19 · AWS Lambda · SST · CloudFront · GitHub Actions · OpenAI · Claude API · OCR · GA4 · Cursor · Claude Code
+
+Delivered three production serverless products:
+- **CT (Commission Tracker):** commission analyzer for 50+ companies using a two-step dynamic prompt architecture (company identification → company-specific extraction), OCR pipeline on PDF reports, queue-based serverless processing, hallucination-reduction validation.
+- **UMI (Unified Meeting Intelligence):** multi-platform meeting integration (Google Meet, Zoom, Teams) with AI transcription via OpenAI Whisper, smart summaries, follow-up generation, RAG chat interface, mem0 persistent memory, and third-party file uploads.
+- **BMC (Benefit Match Center):** React 19 SPA on S3 + CloudFront with streaming AI chat, Lambda form handlers, and full SEO stack (JSON-LD structured data, GA4, Open Graph, llms.txt, llms-full.txt, sitemap.xml, robots.txt with AI crawler rules).
+Also automated social media scheduling via Metricool API.
+
+### AI/Web Bot Developer @ D2V — Germany
+**Aug. 2025 – Oct. 2025**
+Stack: RAG · Mistral · Notion API · Oura Ring API · Bolt · Claude Code
+RAG Voice Chat, Notion–Mistral automations, Oura Ring API integrations, and custom AI tooling under strict NDA.
+
+### Full Stack AI / DevOps Developer @ Relatividad IA — Quito, Ecuador
+**Dec. 2024 – Aug. 2025**
+Stack: React · Next.js · N8N · AWS ECS · Evolution API · Twilio · Retell AI · GHL · ElevenLabs · CRM · Cursor
+
+Built a Logistic Tracker SaaS and WhatsApp CRM platform with N8N orchestration, Evolution API, and AWS ECS deployment. Designed AI voice call agents (Twilio + Retell-style flows + ElevenLabs TTS) with speech-to-text pipelines, multi-turn prompt flows for lead qualification, and GoHighLevel CRM integrations — automating lead creation, follow-ups, and support routing from inbound calls and chats.
+
+### Full Stack/DevOps Developer @ Fenix Corp — Latacunga, Ecuador
+**May 2024 – Dec. 2024**
+Stack: React · Node.js · Express · LangChain · Grafana · Apache Guacamole · Moodle
+ChatBot LLM with access to corporate knowledge bases (Moodle, SharePoint, TikTok, YouTube). Grafana monitoring dashboards and Apache Guacamole remote access.
+
+### Full Stack/DevOps Developer @ Taurhus Capacitaciones — Illuchi, Ecuador
+**Apr. 2023 – May 2024**
+Stack: Laravel · Mix-Vue.js · CI/CD · GitHub Actions
+LMS for private security guard students with CI/CD pipeline.
+
+### Programming Instructor @ Algorithmics International School — Latacunga, Ecuador
+**Sept. 2023 – Oct. 2024**
+Taught Python, visual programming, and game design to children and teens aged 6–17 in bilingual environment.
+
+### Game Engine / AI Developer @ ESPE · Taurhus Capacitaciones
+**Aug. 2021 – Apr. 2023**
+Stack: Unity · Python · OpenCV · Kinect 2 · ESP32
+Shooting range simulator with shot detection, intelligent classification, and scoring. Led to Springer BICA 2023 publication.
+
+## Freelancing
+
+### Entropía N8N Studio — Founder
+**2025 – Present**
+Stack: N8N · GoHighLevel · ElevenLabs · Twilio · Retell AI · WhatsApp API · AI Agents
+URL: https://entropia-n8n-studio.vercel.app/en
+
+AI automation agency delivering end-to-end voice and chat pipelines for SMBs. Builds N8N agentic flows with multi-step tool calls, RAG memory, and fallback routing. Develops GoHighLevel embedded apps (custom widgets inside GHL sub-accounts), Twilio SMS/voice integrations, ElevenLabs voice cloning for IVR, and Retell AI multi-turn voice agents for lead qualification. Automates WhatsApp funnels connected to CRM webhooks for real-time lead capture and follow-up.
+
+## Publications
+
+David Alberto Vique Almeida, Luis Armando Chicaiza Conteron, José Luis Carrillo Medina, Edison Gonzalo Espinosa Gallardo.
+*Prediction of the Correct Firing Position with a Pistol Based on a MANFIS Model.*
+Biologically Inspired Cognitive Architectures 2023. Studies in Computational Intelligence, Volume 1130, Springer, 2024.
+DOI: https://doi.org/10.1007/978-3-031-50381-8_99
+
+## Beyond Code
+
+- Triathlon finisher — 1.5 km swim · 40 km bike · 10 km run
+- Faith-driven mindset — resilience, discipline, long-term thinking
+
+## Social
+
+- GitHub: https://github.com/DavidVique1998
+- LinkedIn: https://www.linkedin.com/in/david-vique-b29941206
+- Instagram: https://www.instagram.com/david_vique98/
+- Entropía: https://entropia-n8n-studio.vercel.app/en
