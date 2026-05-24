@@ -1,0 +1,35 @@
+Dear Hiring Manager,
+
+I am writing to express my interest in opportunities related to modern AI product development (Full Stack / AI Automation). I am a Senior Full Stack AI Engineer from Ecuador with 5+ years building AI-driven SaaS products, automation pipelines, and serverless cloud systems. My stack covers React, Next.js, NestJS, Node.js, TypeScript, AWS Lambda, SST, PostgreSQL, Docker, GitHub Actions, and an AI/automation layer that includes OpenAI, Claude, LangChain, RAG, OCR, mem0, N8N, GoHighLevel, ElevenLabs, Twilio, and Retell AI.
+
+At Pinecrest Consulting (Sept. 2025 – May 2026) I delivered three production serverless products on AWS Lambda: Commission Tracker — a commission analyzer for 50+ companies using a two-step dynamic prompt architecture (company identification → company-specific extraction), OCR pipeline, and queue-based serverless processing with hallucination-reduction validation; UMI — a multi-platform meeting intelligence system (Meet, Zoom, Teams) with AI transcription, smart summaries, follow-up generation, RAG chat, and mem0 persistent memory; and BMC — a React 19 SPA on S3+CloudFront with streaming AI chat, Lambda form handlers, and full SEO stack (JSON-LD, GA4, Open Graph, llms.txt). I also automated social media scheduling via Metricool API.
+
+At Relatividad IA I built a Logistic Tracker SaaS and WhatsApp CRM platform, and designed AI voice call agents using ElevenLabs TTS, Twilio, and Retell AI — multi-turn voice flows for lead qualification with speech-to-text pipelines and GoHighLevel CRM integrations that automated lead creation, follow-ups, and support routing from inbound calls and chats.
+
+Through Entropía N8N Studio, my own AI automation agency, I deliver end-to-end voice and chat pipelines for SMBs: N8N agentic flows with multi-step tool calls and RAG memory, GoHighLevel embedded apps (custom widgets inside GHL sub-accounts), ElevenLabs voice cloning for IVR, Retell AI multi-turn voice agents, and WhatsApp funnels connected to CRM webhooks for real-time lead capture and follow-up.
+
+What makes me a strong fit is my ability to own the full delivery cycle — product architecture, cloud infrastructure, AI integrations, and automation — while communicating clearly with founders and non-technical stakeholders. I take my growth seriously on every front: I completed my first triathlon (1.5 km swim · 40 km bike · 10 km run), maintain disciplined habits around sleep, exercise, and focus, and lean on my faith and mindset to stay resilient and solution-oriented under pressure. I am especially interested in fully remote roles where I can contribute at a senior level and keep raising the bar.
+
+Thank you for your time and consideration. I would welcome the opportunity to discuss how my background can support your team.
+
+Sincerely,
+David Alberto Vique Almeida
+Riobamba, Ecuador
+0992520223
+albert98.developer@gmail.com
+Portfolio: https://david-dev-portfolio-2026.vercel.app/
+Loom: https://www.loom.com/share/338a8375f490437299abe2d80d281fef
+
+
+Additional summary
+Solution
+As a Senior Full Stack AI Engineer, I convert product requirements into production systems — SaaS platforms, AI pipelines, voice agents, landing pages, and dashboards — by integrating APIs, cloud services, and open-source tooling. This includes building Commission Tracker and UMI as serverless AWS Lambda products with OCR, dynamic LLM prompt architectures, RAG chat, and mem0 persistent memory; BMC as a React 19 SPA with a full SEO stack; AI voice agents with ElevenLabs + Twilio + Retell AI for automated lead qualification; and GoHighLevel embedded apps connected to N8N to orchestrate CRM workflows, call flows, and lead automations.
+
+Outcome or impact
+The systems I delivered analyzed commissions for 50+ companies with queue-based validation, centralized multi-platform meeting transcripts with AI-powered querying and follow-up generation, promoted Section 125 benefits through a focused SEO-optimized landing experience, and automated marketing and CRM operations through GHL + N8N + voice agent integrations. These solutions reduced manual effort, improved data visibility for non-technical teams, and enabled sales and ops teams to run qualification and support workflows hands-off.
+
+Skills or technologies
+Next.js, React 19, NestJS, Node.js, TypeScript, AWS Lambda, S3, SST, CloudFront, PostgreSQL, Docker, Terraform, GitHub Actions, N8N, GoHighLevel, ElevenLabs, Twilio, Retell AI, WhatsApp API, OpenAI, Claude, LangChain, RAG, OCR, mem0, MCPs, REST APIs, webhooks, and open-source tooling — deployed on serverless cloud environments so that technical and non-technical teams can operate and maintain the systems.
+
+Learnings & personal growth
+I deepened my ability to design multi-step AI prompt architectures that reduce hallucinations at scale, learned to build and orchestrate voice agent pipelines that connect telephony, TTS, and CRM in real time, and sharpened how I align technical decisions with business outcomes — whether that means helping employers understand benefits, giving sales teams trusted commission data, or enabling ops teams to run qualification flows without manual intervention.
