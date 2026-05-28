@@ -20,8 +20,10 @@ BP requiere un sistema de banca por internet que permita a sus clientes consulta
 C4Context
   title Contexto — BP Internet Banking
 
-  Person(customer, "Cliente Bancario", "Consulta cuentas, transfiere y paga desde web o móvil")
-  Person(admin, "Administrador", "Monitorea transacciones y gestiona el sistema")
+  Enterprise_Boundary(users, "Usuarios") {
+    Person(customer, "Cliente Bancario", "Consulta cuentas, transfiere y paga desde web o móvil")
+    Person(admin, "Administrador", "Monitorea transacciones y gestiona el sistema")
+  }
 
   System(bp, "BP Internet Banking", "SPA + App Móvil: cuentas, transferencias y notificaciones")
 
