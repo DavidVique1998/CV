@@ -26,14 +26,16 @@ C4Context
 
   System(bp, "BP Internet Banking", "SPA + Mobile App: accounts, transfers and notifications")
 
-  System_Ext(core, "Core Banking", "Customer data, accounts and transactions")
+  System_Ext(core, "Core Banking", "Basic customer data, movements and products")
+  System_Ext(detail, "Customer Detail", "Supplementary customer information")
   System_Ext(idp, "Identity Provider", "OAuth 2.0 — authentication")
   System_Ext(aws_svc, "AWS Services", "Email (SES) · SMS (SNS) · Biometrics (Rekognition)")
   System_Ext(payments, "Payment Network", "ACH / SWIFT — interbank transfers")
 
   Rel(customer, bp, "Uses", "HTTPS")
   Rel(admin, bp, "Manages", "HTTPS")
-  Rel(bp, core, "Account data")
+  Rel(bp, core, "Basic data & movements")
+  Rel(bp, detail, "Detailed profile")
   Rel(bp, idp, "Authentication")
   Rel(bp, aws_svc, "Notifications & biometrics")
   Rel(bp, payments, "Transfers")
@@ -45,7 +47,8 @@ C4Context
 |---|---|---|
 | Banking Customer | Person | Retail user — accounts, history, transfers |
 | Operations Administrator | Person | Internal staff — monitoring and alerts |
-| Core Banking Platform | External system | Primary source: customers, transactions, products, profile |
+| Core Banking Platform | External system | Primary source: basic customer data, movements, products |
+| Customer Detail System | External system | Supplementary information for enriched customer profiles |
 | Identity Provider (OAuth 2.0) | External system | Issues and validates tokens |
 | AWS Services (SES · SNS · Rekognition) | External system | Email alerts, SMS/OTP, facial verification |
 | ACH/SWIFT Payment Network | External system | Interbank transfer execution |
@@ -64,6 +67,7 @@ C4Container
   Person(customer, "Customer")
 
   System_Ext(core, "Core Banking")
+  System_Ext(detail, "Customer Detail")
   System_Ext(idp, "Identity Provider")
   System_Ext(payments, "Payment Network")
 
@@ -90,7 +94,8 @@ C4Container
   Rel(auth, idp, "OAuth 2.0 / OIDC")
   Rel(account, cache, "Cache-Aside")
   Rel(account, db, "SQL")
-  Rel(account, core, "Account data")
+  Rel(account, core, "Basic data")
+  Rel(account, detail, "Detailed profile")
   Rel(transfer, db, "Persists")
   Rel(transfer, payments, "ACH / SWIFT")
   Rel(transfer, events, "Publishes event")
@@ -327,7 +332,9 @@ C4Component
 
 **Pattern:** Event-Driven. Services publish events to EventBridge. The Notification Service subscribes and dispatches to the appropriate channel based on customer preferences.
 
-**Justification:** Decoupling via EventBridge avoids direct dependency between Transfer Service and Notification Service. Using AWS SES + SNS as managed services guarantees 99.9% SLA and complies with financial communication regulations.
+**Justification 1:** Decoupling via EventBridge avoids direct dependency between Transfer Service and Notification Service. If the notification service goes down, transfers are not blocked — the event is queued in SQS until delivery succeeds.
+
+**Justification 2:** AWS SES + SNS are managed services with 99.9% SLA and built-in regulatory compliance for financial communications. Evaluated alternative: Twilio — comparable delivery guarantees but adds a third-party dependency, higher per-message cost, and cross-cloud data egress fees not incurred with native AWS services.
 
 ---
 
@@ -405,6 +412,25 @@ C4Container
 | WAF + Shield | Perimeter security | DDoS protection, OWASP Top 10 |
 | CloudWatch + X-Ray | Observability | Metrics, logs, distributed tracing |
 | Secrets Manager | Secret management | Automatic rotation, no hardcoding |
+
+### Cost Management
+
+**Strategy:** Pay-per-use managed services + right-sized compute to minimize fixed costs.
+
+| Service | Billing model | Monthly estimate (medium load) | Optimization lever |
+|---|---|---|---|
+| EKS Cluster | Per cluster + EC2 nodes | ~$150 cluster + ~$300 nodes (3× t3.medium) | Karpenter autoscaler — scale to zero off-peak |
+| Aurora PostgreSQL | Per ACU (Serverless v2) | ~$200 (2–8 ACU) | Serverless v2 scales with traffic, no over-provisioning |
+| DynamoDB | On-demand + storage | ~$50 (audit writes + TTL cleanup) | TTL auto-expires old records, reduces storage cost |
+| ElastiCache Redis | Per node/hour | ~$120 (2× cache.t3.medium, Multi-AZ) | Tune TTLs to maximize hit rate; evict stale data |
+| API Gateway | Per million requests | ~$35 (10M requests/month) | Response caching reduces Lambda/EKS invocations |
+| EventBridge + SQS | Per event/message | ~$10 (low volume) | Batching reduces per-event cost |
+| CloudFront | Per GB transferred | ~$20 (100 GB/month) | Cache-Control headers maximize CDN hit rate |
+| AWS SES | Per 1K emails | ~$1 per 1K | Suppress non-critical emails to reduce volume |
+| CloudWatch | Per GB logs ingested | ~$30 | Set log retention to 30 days; export to S3 for long-term |
+| **Total estimate** | | **~$900–1,200 / month** | Scales with actual load (serverless/on-demand services) |
+
+**Cost governance:** AWS Budgets alert at 80% / 100% of monthly budget. Cost Explorer tags per service for chargeback visibility.
 
 ---
 
