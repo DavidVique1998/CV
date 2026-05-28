@@ -230,11 +230,11 @@ flowchart LR
 ## 6. Onboarding Architecture — Facial Recognition
 
 ```mermaid
-flowchart TD
-    A[Customer registers data] --> B[Captures selfie\nAWS Rekognition]
-    B --> C{Verification OK?}
-    C -- No --> D[Reject / retry]
-    C -- Yes --> E[Create Keycloak user\nSend credentials via SES]
+flowchart LR
+    A[Register data] --> B[Selfie\nRekognition]
+    B --> C{OK?}
+    C -- No --> D[Reject]
+    C -- Yes --> E[Keycloak user\n+ SES email]
 ```
 
 **Recommended tool:** AWS Rekognition — managed service, 99.9% SLA, no internal ML team required. Evaluated alternative: Azure Face API (similar capability, but BP already operates on AWS).
