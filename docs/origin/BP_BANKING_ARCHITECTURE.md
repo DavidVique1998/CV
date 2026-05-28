@@ -1,539 +1,502 @@
-# Arquitectura de Solución — BP Internet Banking
+# Solution Architecture — BP Internet Banking
 
-**Diseño C4 · Sistema de Banca por Internet**
+**C4 Design · Internet Banking System**
 
-> Documento elaborado siguiendo el modelo C4 (Context → Container → Component) con justificación teórica por cada decisión arquitectónica, conforme a los requisitos del ejercicio.
-
----
-
-## 1. Resumen Ejecutivo
-
-BP requiere un sistema de banca por internet que permita a sus clientes consultar movimientos, realizar transferencias propias e interbancarias, y recibir notificaciones en tiempo real. La solución propuesta es una **arquitectura de microservicios sobre AWS**, con dos canales de front-end (SPA + App Móvil), autenticación OAuth 2.0 con PKCE, onboarding biométrico, capa de integración centralizada, auditoría append-only y alta disponibilidad multi-región.
+> Document following the C4 model (Context → Container → Component) with architectural justifications per exercise requirements.
 
 ---
 
-## 2. Diagrama de Contexto (C4 — Nivel 1)
+## 1. Executive Summary
 
-> Para audiencias no técnicas. Muestra el sistema BP Internet Banking y sus relaciones con usuarios y sistemas externos.
+BP requires an internet banking system for account viewing, own and interbank transfers, and real-time notifications. The proposed solution is a **microservices architecture on AWS** with two front-end channels (SPA + Mobile App), OAuth 2.0 + PKCE authentication, biometric onboarding, a centralized integration layer, append-only audit logging, and multi-region high availability.
+
+---
+
+## 2. Context Diagram (C4 — Level 1)
+
+> For non-technical audiences. Shows BP Internet Banking and its relationships with users and external systems.
 
 ```mermaid
+%%{init: {"layout": "elk"}}%%
 C4Context
-  title Contexto — BP Internet Banking
+  title Context — BP Internet Banking
 
-  Enterprise_Boundary(users, "Usuarios") {
-    Person(customer, "Cliente Bancario", "Consulta cuentas, transfiere y paga desde web o móvil")
-    Person(admin, "Administrador", "Monitorea transacciones y gestiona el sistema")
-  }
+  Person(customer, "Banking Customer", "Views accounts, transfers and payments")
+  Person(admin, "Administrator", "Monitors and manages the system")
 
-  System(bp, "BP Internet Banking", "SPA + App Móvil: cuentas, transferencias y notificaciones")
+  System(bp, "BP Internet Banking", "SPA + Mobile App: accounts, transfers and notifications")
 
-  System_Ext(core, "Core Banking", "Datos de cliente y movimientos")
-  System_Ext(detail, "Detalle de Cliente", "Información complementaria")
-  System_Ext(idp, "Identity Provider", "OAuth 2.0 — autenticación")
-  System_Ext(rekognition, "AWS Rekognition", "Reconocimiento facial")
-  System_Ext(ses, "AWS SES", "Notificaciones por email")
-  System_Ext(sns, "AWS SNS", "Notificaciones por SMS")
-  System_Ext(payments, "Red de Pagos", "ACH / SWIFT")
+  System_Ext(core, "Core Banking", "Customer data, accounts and transactions")
+  System_Ext(idp, "Identity Provider", "OAuth 2.0 — authentication")
+  System_Ext(aws_svc, "AWS Services", "Email (SES) · SMS (SNS) · Biometrics (Rekognition)")
+  System_Ext(payments, "Payment Network", "ACH / SWIFT — interbank transfers")
 
-  Rel(customer, bp, "Usa", "HTTPS")
-  Rel(admin, bp, "Administra", "HTTPS")
-  Rel(bp, core, "Datos y movimientos")
-  Rel(bp, detail, "Perfil detallado")
-  Rel(bp, idp, "Autenticación")
-  Rel(bp, rekognition, "Biometría")
-  Rel(bp, ses, "Email")
-  Rel(bp, sns, "SMS")
-  Rel(bp, payments, "Transferencias")
+  Rel(customer, bp, "Uses", "HTTPS")
+  Rel(admin, bp, "Manages", "HTTPS")
+  Rel(bp, core, "Account data")
+  Rel(bp, idp, "Authentication")
+  Rel(bp, aws_svc, "Notifications & biometrics")
+  Rel(bp, payments, "Transfers")
 ```
 
-### Actores y Sistemas Externos
+### Actors and External Systems
 
-| Actor / Sistema | Tipo | Rol |
+| Actor / System | Type | Role |
 |---|---|---|
-| Cliente Bancario | Persona | Usuario retail — accede a cuentas, historial, transferencias |
-| Administrador de Operaciones | Persona | Staff interno — monitoreo, configuración, alertas |
-| Core Banking Platform | Sistema externo | Fuente principal de datos: cliente, movimientos, productos |
-| Sistema de Detalle de Cliente | Sistema externo | Información complementaria para vistas enriquecidas |
-| Identity Provider (OAuth 2.0) | Sistema externo | Producto corporativo existente — emite y valida tokens |
-| AWS Rekognition | Sistema externo | Verificación facial en onboarding móvil |
-| AWS SES (Email) | Sistema externo | Canal de notificación 1 — alertas transaccionales por email |
-| AWS SNS (SMS) | Sistema externo | Canal de notificación 2 — alertas transaccionales por SMS |
-| Red de Pagos ACH/SWIFT | Sistema externo | Ejecución de transferencias interbancarias |
+| Banking Customer | Person | Retail user — accounts, history, transfers |
+| Operations Administrator | Person | Internal staff — monitoring and alerts |
+| Core Banking Platform | External system | Primary source: customers, transactions, products, profile |
+| Identity Provider (OAuth 2.0) | External system | Issues and validates tokens |
+| AWS Services (SES · SNS · Rekognition) | External system | Email alerts, SMS/OTP, facial verification |
+| ACH/SWIFT Payment Network | External system | Interbank transfer execution |
 
 ---
 
-## 3. Diagrama de Contenedores (C4 — Nivel 2)
+## 3. Container Diagram (C4 — Level 2)
 
-> Para audiencias técnicas. Muestra aplicaciones, servicios, bases de datos y mensajería. Incluye tecnologías y protocolos de comunicación.
+> For technical audiences. Shows applications, services, databases and messaging with technologies and protocols.
 
 ```mermaid
 C4Container
-  title Contenedores — BP Internet Banking
+  title Containers — BP Internet Banking
 
-  Person(customer, "Cliente")
-  Person(admin, "Administrador")
+  Person(customer, "Customer")
 
   System_Boundary(bp, "BP Internet Banking") {
-    Container(spa, "SPA Web", "React + TypeScript", "Interfaz bancaria para navegador")
-    Container(mobile, "App Móvil", "Flutter", "iOS/Android — biometría y operaciones")
-    Container(api_gw, "API Gateway", "AWS API Gateway", "Auth, rate limit, enrutamiento")
-    Container(auth, "Auth Service", "Keycloak", "OAuth 2.0 + PKCE — tokens y sesiones")
-    Container(account, "Account Service", "Spring Boot", "Cuentas y movimientos — Cache-Aside")
-    Container(transfer, "Transfer Service", "Spring Boot", "Transferencias — Circuit Breaker")
-    Container(events, "Event Bus", "AWS EventBridge", "Eventos asincrónicos")
-    Container(cache, "Cache", "Redis ElastiCache", "Cache-Aside — TTL por tipo de dato")
-    ContainerDb(db, "BD Operacional", "Aurora PostgreSQL", "ACID, Multi-AZ")
-    ContainerDb(audit_db, "BD Auditoría", "DynamoDB", "Append-only — inmutable por IAM")
+    Container(spa, "Web SPA", "React + TypeScript", "Browser banking interface")
+    Container(mobile, "Mobile App", "Flutter", "iOS/Android — biometrics and operations")
+    Container(api_gw, "API Gateway", "AWS API Gateway", "Auth, rate limiting, routing")
+    Container(auth, "Auth Service", "Keycloak", "OAuth 2.0 + PKCE — tokens and sessions")
+    Container(account, "Account Service", "Spring Boot", "Accounts and transactions — Cache-Aside")
+    Container(transfer, "Transfer Service", "Spring Boot", "Transfers — Circuit Breaker")
+    Container(events, "Event Bus", "AWS EventBridge", "Async events and audit")
+    Container(cache, "Cache", "Redis ElastiCache", "Cache-Aside — TTL per data type")
+    ContainerDb(db, "Operational DB", "Aurora PostgreSQL", "ACID, Multi-AZ")
+    ContainerDb(audit_db, "Audit DB", "DynamoDB", "Append-only — immutable via IAM")
   }
 
   System_Ext(core, "Core Banking")
   System_Ext(idp, "Identity Provider")
-  System_Ext(payments, "Red de Pagos")
+  System_Ext(payments, "Payment Network")
 
-  Rel(customer, spa, "Usa", "HTTPS")
-  Rel(customer, mobile, "Usa", "HTTPS")
+  Rel(customer, spa, "Uses", "HTTPS")
+  Rel(customer, mobile, "Uses", "HTTPS")
   Rel(spa, api_gw, "API calls", "HTTPS")
   Rel(mobile, api_gw, "API calls", "HTTPS")
-  Rel(api_gw, auth, "Valida token")
-  Rel(api_gw, account, "Enruta")
-  Rel(api_gw, transfer, "Enruta")
+  Rel(api_gw, auth, "Validates token")
+  Rel(api_gw, account, "Routes")
+  Rel(api_gw, transfer, "Routes")
   Rel(auth, idp, "OAuth 2.0 / OIDC")
   Rel(account, cache, "Cache-Aside")
   Rel(account, db, "SQL")
-  Rel(account, core, "Datos de cuenta")
-  Rel(transfer, db, "Persiste")
+  Rel(account, core, "Account data")
+  Rel(transfer, db, "Persists")
   Rel(transfer, payments, "ACH / SWIFT")
-  Rel(transfer, events, "Publica evento")
-  Rel(events, audit_db, "Auditoría append-only")
+  Rel(transfer, events, "Publishes event")
+  Rel(events, audit_db, "Append-only audit")
 ```
 
 ---
 
-## 4. Diagrama de Componentes (C4 — Nivel 3)
+## 4. Component Diagrams (C4 — Level 3)
 
-### 4.1 Transfer Service — Componentes
+### 4.1 Transfer Service — Components
 
-> El servicio más crítico. Maneja transferencias propias e interbancarias con tolerancia a fallos y patrón Cache-Aside.
+> Critical service: handles own and interbank transfers with Circuit Breaker fault tolerance.
 
 ```mermaid
 C4Component
-  title Componentes — Transfer Service
+  title Components — Transfer Service
 
   Container_Boundary(transfer_svc, "Transfer Service (Spring Boot)") {
-    Component(ctrl, "TransferController", "REST", "Expone /transfers/own y /interbank")
-    Component(validator, "TransferValidator", "Business Logic", "Límites, saldo y antifraude")
-    Component(handler, "TransferHandler", "Service", "Propias e interbancarias con reintentos")
+    Component(ctrl, "TransferController", "REST", "Exposes /transfers/own and /interbank")
+    Component(validator, "TransferValidator", "Business Logic", "Limits, balance and anti-fraud")
+    Component(handler, "TransferHandler", "Service", "Transfers with retries")
     Component(circuit_breaker, "CircuitBreaker", "Resilience4j", "CLOSED / OPEN / HALF-OPEN")
-    Component(transfer_repo, "TransferRepository", "JPA", "Persiste transferencias")
+    Component(transfer_repo, "TransferRepository", "JPA", "Persists transfers")
     Component(event_publisher, "EventPublisher", "Messaging", "TransferCompleted / TransferFailed")
   }
 
   ContainerDb(ops_db, "Aurora PostgreSQL")
   Container(event_bus, "AWS EventBridge")
   System_Ext(core, "Core Banking")
-  System_Ext(payments, "Red de Pagos")
+  System_Ext(payments, "Payment Network")
 
-  Rel(ctrl, validator, "Valida")
-  Rel(validator, core, "Consulta saldo")
-  Rel(validator, handler, "Ejecuta")
-  Rel(handler, circuit_breaker, "Llamada protegida")
+  Rel(ctrl, validator, "Validates")
+  Rel(validator, core, "Checks balance")
+  Rel(validator, handler, "Executes")
+  Rel(handler, circuit_breaker, "Protected call")
   Rel(circuit_breaker, payments, "ACH / SWIFT")
-  Rel(handler, transfer_repo, "Persiste")
+  Rel(handler, transfer_repo, "Persists")
   Rel(transfer_repo, ops_db, "SQL")
-  Rel(handler, event_publisher, "Emite")
-  Rel(event_publisher, event_bus, "Publica")
+  Rel(handler, event_publisher, "Emits")
+  Rel(event_publisher, event_bus, "Publishes")
 ```
 
-### 4.2 Auth Service — Componentes (Keycloak + PKCE)
+### 4.2 Auth Service — Components (Keycloak + PKCE)
 
 ```mermaid
 C4Component
-  title Componentes — Auth Service (OAuth 2.0 + PKCE)
+  title Components — Auth Service (OAuth 2.0 + PKCE)
 
   Container_Boundary(auth_svc, "Auth Service (Keycloak)") {
-    Component(auth_endpoint, "Authorization Endpoint", "OAuth 2.0", "Inicia flujo PKCE")
-    Component(token_endpoint, "Token Endpoint", "OAuth 2.0", "Emite tokens JWT")
-    Component(mfa_provider, "MFA Provider", "Plugin Keycloak", "OTP / huella / facial")
-    Component(session_manager, "Session Manager", "Keycloak", "Sesiones y refresh tokens")
-    ComponentDb(user_store, "User Store", "PostgreSQL", "Credenciales, roles y atributos")
+    Component(auth_endpoint, "Authorization Endpoint", "OAuth 2.0", "Initiates PKCE flow")
+    Component(token_endpoint, "Token Endpoint", "OAuth 2.0", "Issues JWT tokens")
+    Component(mfa_provider, "MFA Provider", "Keycloak Plugin", "OTP / fingerprint / facial")
+    Component(session_manager, "Session Manager", "Keycloak", "Sessions and refresh tokens")
+    ComponentDb(user_store, "User Store", "PostgreSQL", "Credentials, roles and attributes")
   }
 
-  Container(spa, "SPA Web")
-  Container(mobile, "App Móvil")
-  System_Ext(idp_ext, "Identity Provider Corporativo")
+  Container(spa, "Web SPA")
+  Container(mobile, "Mobile App")
+  System_Ext(idp_ext, "Corporate Identity Provider")
 
   Rel(spa, auth_endpoint, "Login PKCE", "HTTPS")
   Rel(mobile, auth_endpoint, "Login PKCE", "HTTPS")
-  Rel(auth_endpoint, mfa_provider, "2do factor")
-  Rel(auth_endpoint, token_endpoint, "Autoriza código")
-  Rel(token_endpoint, session_manager, "Crea sesión")
-  Rel(session_manager, user_store, "Lee / escribe")
-  Rel(auth_endpoint, idp_ext, "Federación SAML/OIDC")
+  Rel(auth_endpoint, mfa_provider, "2nd factor")
+  Rel(auth_endpoint, token_endpoint, "Authorizes code")
+  Rel(token_endpoint, session_manager, "Creates session")
+  Rel(session_manager, user_store, "Reads / writes")
+  Rel(auth_endpoint, idp_ext, "SAML/OIDC Federation")
 ```
 
-### 4.3 Account Service — Componentes (Cache-Aside)
+### 4.3 Account Service — Components (Cache-Aside)
 
 ```mermaid
 C4Component
-  title Componentes — Account Service (Cache-Aside)
+  title Components — Account Service (Cache-Aside)
 
   Container_Boundary(account_svc, "Account Service (Spring Boot)") {
-    Component(account_ctrl, "AccountController", "REST", "GET /accounts y /accounts/{id}/products")
-    Component(account_service, "AccountService", "Business Logic", "Orquesta datos y caché")
-    Component(cache_manager, "CacheManager", "Cache-Aside", "Redis primero — miss consulta fuente")
-    Component(account_repo, "AccountRepository", "JPA", "Datos operacionales")
-    Component(integration_client, "IntegrationClient", "Feign HTTP", "Core Banking y Sistema Detalle")
+    Component(account_ctrl, "AccountController", "REST", "GET /accounts and /movements")
+    Component(account_service, "AccountService", "Business Logic", "Orchestrates data and cache")
+    Component(cache_manager, "CacheManager", "Cache-Aside", "Redis first — miss queries source")
+    Component(account_repo, "AccountRepository", "JPA", "Operational data")
+    Component(integration_client, "IntegrationClient", "Feign HTTP", "Core Banking adapter")
   }
 
   ContainerDb(ops_db, "Aurora PostgreSQL")
   Container(cache, "Redis ElastiCache")
   System_Ext(core, "Core Banking")
-  System_Ext(detail, "Sistema de Detalle")
 
-  Rel(account_ctrl, account_service, "Delega")
-  Rel(account_service, cache_manager, "Solicita")
-  Rel(cache_manager, cache, "Lee / escribe")
+  Rel(account_ctrl, account_service, "Delegates")
+  Rel(account_service, cache_manager, "Requests")
+  Rel(cache_manager, cache, "Reads / writes")
   Rel(cache_manager, integration_client, "Cache miss")
-  Rel(integration_client, core, "Datos core")
-  Rel(integration_client, detail, "Datos detalle")
+  Rel(integration_client, core, "Account data")
   Rel(account_service, account_repo, "CRUD")
   Rel(account_repo, ops_db, "SQL")
 ```
 
 ---
 
-## 5. Arquitectura de Autenticación — OAuth 2.0 + PKCE
+## 5. Authentication Architecture — OAuth 2.0 + PKCE
 
-### Flujo Recomendado: Authorization Code Flow + PKCE
+### Recommended Flow: Authorization Code Flow + PKCE
 
-**¿Por qué Authorization Code + PKCE y no Implicit Flow?**
+**Why Authorization Code + PKCE and not Implicit Flow?**
 
-| Criterio | Implicit Flow | Authorization Code + PKCE |
+| Criterion | Implicit Flow | Authorization Code + PKCE |
 |---|---|---|
-| Exposición del token | Access token en URL (inseguro) | Solo código temporal en URL |
-| Seguridad en mobile | No recomendado (RFC 8252) | Estándar recomendado |
-| Refresh token | No soportado | Sí, con rotación |
-| Estado del estándar | **Deprecado (OAuth 2.1)** | **Recomendado activo** |
+| Token exposure | Access token in URL (insecure) | Only temporary code in URL |
+| Mobile security | Not recommended (RFC 8252) | Recommended standard |
+| Refresh token | Not supported | Yes, with rotation |
+| Standard status | **Deprecated (OAuth 2.1)** | **Actively recommended** |
 
-**Justificación 1:** RFC 9700 / OAuth 2.1 elimina el Implicit Flow por riesgo de token leakage en la URL y logs. Authorization Code + PKCE mitiga este riesgo sin requerir client_secret en apps públicas.
+**Justification 1:** RFC 9700 / OAuth 2.1 removes Implicit Flow due to token leakage risk in URLs and logs. Authorization Code + PKCE mitigates this without requiring a `client_secret` in public apps.
 
-**Justificación 2:** RFC 8252 ("OAuth 2.0 for Native Apps") exige PKCE para aplicaciones móviles porque no pueden guardar secretos de forma segura. PKCE usa un `code_verifier` generado en el dispositivo, lo que hace el código de autorización inútil si es interceptado.
+**Justification 2:** RFC 8252 requires PKCE for mobile apps because they cannot securely store secrets. PKCE uses a device-generated `code_verifier`, making an intercepted authorization code useless.
 
 ```mermaid
-flowchart TD
-    A[App genera verifier y challenge] --> B[GET /authorize + challenge\nKeycloak: login + MFA]
-    B --> C[POST /token + verifier]
-    C --> D{SHA-256 verifier == challenge?}
-    D -- Sí --> E[access_token + refresh_token]
-    D -- No --> F[403 Acceso denegado]
+flowchart LR
+    A[App: verifier\n+ challenge] --> B[GET /authorize\nlogin + MFA]
+    B --> C[POST /token\n+ verifier]
+    C --> D{SHA-256\nmatch?}
+    D -- Yes --> E[access_token\nrefresh_token]
+    D -- No --> F[403]
 ```
 
-### Métodos de Autenticación Post-Onboarding
+### Post-Onboarding Authentication Methods
 
-| Método | Plataforma | Implementación |
+| Method | Platform | Implementation |
 |---|---|---|
-| Usuario + contraseña | Web + Móvil | Keycloak nativo |
-| Huella dactilar | Móvil | Flutter LocalAuth + FIDO2 / WebAuthn |
-| OTP por email/SMS | Web + Móvil | Keycloak OTP plugin |
-| Reconocimiento facial | Móvil (futuro) | AWS Rekognition + Keycloak plugin |
+| Username + password | Web + Mobile | Native Keycloak |
+| Fingerprint | Mobile | Flutter LocalAuth + FIDO2 / WebAuthn |
+| OTP via email/SMS | Web + Mobile | Keycloak OTP plugin |
+| Facial recognition | Mobile | AWS Rekognition + Keycloak plugin |
 
 ---
 
-## 6. Arquitectura de Onboarding — Reconocimiento Facial
+## 6. Onboarding Architecture — Facial Recognition
 
 ```mermaid
 flowchart TD
-    A[Cliente registra datos básicos] --> B[Captura selfie → AWS Rekognition]
-    B --> C{Verificación facial OK?}
-    C -- No --> D[Rechaza o solicita reintento]
-    C -- Sí --> E[Crea usuario en Keycloak\nEnvía credenciales por SES]
+    A[Customer registers data] --> B[Captures selfie\nAWS Rekognition]
+    B --> C{Verification OK?}
+    C -- No --> D[Reject / retry]
+    C -- Yes --> E[Create Keycloak user\nSend credentials via SES]
 ```
 
-**Herramienta recomendada:** AWS Rekognition — servicio gestionado, SLA 99.9%, sin necesidad de equipo de ML interno. Alternativa evaluada: Azure Face API (similar capacidad, pero BP ya opera en AWS).
+**Recommended tool:** AWS Rekognition — managed service, 99.9% SLA, no internal ML team required. Evaluated alternative: Azure Face API (similar capability, but BP already operates on AWS).
 
-**Justificación 1:** Usar un servicio gestionado (Rekognition) reduce el time-to-market y elimina la complejidad de entrenar y mantener modelos propios. Rekognition tiene precisión >99.5% para verificación 1:1.
+**Justification 1:** Using a managed service reduces time-to-market and eliminates model training complexity. Rekognition has >99.5% accuracy for 1:1 verification.
 
-**Justificación 2:** Separar el Onboarding Service como microservicio independiente permite escalar el flujo de alta de clientes sin afectar la disponibilidad de los servicios transaccionales.
+**Justification 2:** Separating Onboarding as an independent microservice allows scaling registration without affecting transactional service availability.
 
 ---
 
-## 7. Patrón de Caché para Clientes Frecuentes — Cache-Aside
+## 7. Cache Pattern — Cache-Aside
 
-**Patrón elegido:** Cache-Aside (Lazy Loading)
+**Chosen pattern:** Cache-Aside (Lazy Loading)
 
-**¿Por qué Cache-Aside y no Write-Through o Read-Through?**
+**Justification 1:** Cache-Aside gives explicit control over what is cached. For sensitive banking data (balances, movements), selective invalidation is critical. Write-Through caches all writes including data that may never be read.
 
-**Justificación 1:** Cache-Aside da control explícito sobre qué se cachea. Para datos bancarios sensibles (saldos, movimientos), es crítico poder invalidar selectivamente. Write-Through cachea todos los writes, incluyendo datos que quizás nunca se lean.
-
-**Justificación 2:** El Core Banking Platform es un sistema externo que no controlamos. Cache-Aside es el único patrón aplicable cuando la fuente de datos es un sistema legado externo sin soporte para write-through nativo.
+**Justification 2:** Core Banking is an external system we do not control. Cache-Aside is the only applicable pattern when the data source is a legacy external system with no native write-through support.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#1168bd', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#0b4e99', 'lineColor': '#444444', 'secondaryColor': '#e8f0fa', 'tertiaryColor': '#f0f0f0'}}}%%
 flowchart LR
-    A[Request de cliente] --> B{¿Dato en Redis?}
-    B -- Hit --> C[Retorna desde caché\nlatencia < 1ms]
-    B -- Miss --> D[Consulta Core Banking\no Sistema de Detalle]
-    D --> E[Escribe en Redis\ncon TTL configurado]
-    E --> F[Retorna dato al cliente]
+    A[Request] --> B{In Redis?}
+    B -- Hit --> C[Return from cache\n< 1ms]
+    B -- Miss --> D[Query Core Banking]
+    D --> E[Write to Redis\nwith TTL]
+    E --> F[Return data]
 ```
 
-| Dato cacheado | TTL | Razón |
+| Cached data | TTL | Reason |
 |---|---|---|
-| Perfil básico del cliente | 15 min | Cambia poco frecuente |
-| Productos / cuentas | 5 min | Puede cambiar por nuevas contrataciones |
-| Últimos movimientos | 2 min | Alta frecuencia de cambio |
-| Token de sesión | Duración del token | Validación rápida sin hit a BD |
+| Customer profile | 15 min | Changes infrequently |
+| Products / accounts | 5 min | May change due to new contracts |
+| Recent movements | 2 min | High change frequency |
+| Session token | Token duration | Fast validation without DB hit |
 
 ---
 
-## 8. Capa de Integración — API Gateway + Adaptadores
+## 8. Integration Layer — API Gateway + Adapters
 
 ```mermaid
 C4Component
-  title Capa de Integración — API Gateway y Adaptadores
+  title Integration Layer — API Gateway and Adapters
 
-  Component(api_gw, "API Gateway", "AWS API Gateway", "Auth, rate limit, enrutamiento")
+  Component(api_gw, "API Gateway", "AWS API Gateway", "Auth, rate limiting, routing")
 
-  Container_Boundary(services, "Microservicios") {
-    Component(account, "Account Service", "Spring Boot", "Cuentas y movimientos")
-    Component(transfer, "Transfer Service", "Spring Boot", "Transferencias")
+  Container_Boundary(services, "Microservices") {
+    Component(account, "Account Service", "Spring Boot", "Accounts and transactions")
+    Component(transfer, "Transfer Service", "Spring Boot", "Transfers")
   }
 
   Container_Boundary(integration, "Integration Layer") {
-    Component(core_adapter, "Core Banking Adapter", "Feign HTTP", "Datos básicos y movimientos")
-    Component(detail_adapter, "Client Detail Adapter", "Feign HTTP", "Perfil enriquecido")
+    Component(core_adapter, "Core Banking Adapter", "Feign HTTP", "Data and transactions")
+    Component(detail_adapter, "Client Detail Adapter", "Feign HTTP", "Enriched profile")
   }
 
   System_Ext(core, "Core Banking Platform")
-  System_Ext(detail, "Sistema de Detalle")
+  System_Ext(detail, "Detail System")
 
-  Rel(api_gw, account, "Enruta")
-  Rel(api_gw, transfer, "Enruta")
-  Rel(account, core_adapter, "Consulta datos")
-  Rel(account, detail_adapter, "Perfil detallado")
-  Rel(transfer, core_adapter, "Consulta saldo")
+  Rel(api_gw, account, "Routes")
+  Rel(api_gw, transfer, "Routes")
+  Rel(account, core_adapter, "Queries data")
+  Rel(account, detail_adapter, "Detailed profile")
+  Rel(transfer, core_adapter, "Checks balance")
   Rel(core_adapter, core, "REST")
   Rel(detail_adapter, detail, "REST")
 ```
 
-**Justificación 1:** El API Gateway centraliza autenticación, rate limiting y logging. Sin él, cada microservicio necesitaría implementar estas preocupaciones transversales, violando DRY y generando inconsistencias.
+**Justification 1:** The API Gateway centralizes authentication, rate limiting and logging. Without it, each microservice would need to implement these cross-cutting concerns, violating DRY.
 
-**Justificación 2:** La Integration Layer con adaptadores por sistema externo (Adapter Pattern) aísla los contratos de los sistemas legados. Si el Core Banking Platform cambia su API, solo se actualiza el adaptador, no los microservicios de negocio.
+**Justification 2:** The Integration Layer with adapters per external system (Adapter Pattern) isolates legacy contracts. If Core Banking changes its API, only the adapter is updated, not the business services.
 
-### Servicios definidos
+### Defined Services
 
-| Servicio | Endpoint | Fuente |
+| Service | Endpoint | Source |
 |---|---|---|
-| Consulta datos básicos | `GET /accounts/{id}` | Core Banking |
-| Consulta movimientos | `GET /accounts/{id}/movements` | Core Banking |
-| Transferencia propia | `POST /transfers/own` | Interno + Core |
-| Transferencia interbancaria | `POST /transfers/interbank` | Core + Red de Pagos |
-| Detalle de cliente | `GET /clients/{id}/profile` | Sistema de Detalle |
-| Notificaciones | `POST /notifications` (async) | EventBridge |
+| Basic data | `GET /accounts/{id}` | Core Banking |
+| Movements | `GET /accounts/{id}/movements` | Core Banking |
+| Own transfer | `POST /transfers/own` | Internal + Core |
+| Interbank transfer | `POST /transfers/interbank` | Core + Payment Network |
+| Customer detail | `GET /clients/{id}/profile` | Detail System |
+| Notifications | `POST /notifications` (async) | EventBridge |
 
 ---
 
-## 9. Arquitectura de Notificaciones
+## 9. Notification Architecture
 
-**Canal 1 — Email (AWS SES):** Alertas de movimientos, confirmaciones de transferencia, recuperación de contraseña.
+**Channel 1 — Email (AWS SES):** Transaction alerts, transfer confirmations, password recovery.
 
-**Canal 2 — SMS (AWS SNS):** OTP para MFA, alertas de seguridad, confirmaciones críticas.
+**Channel 2 — SMS (AWS SNS):** OTP for MFA, security alerts, critical confirmations.
 
-**Patrón:** Event-Driven. Los servicios publican eventos a EventBridge. El Notification Service suscribe y despacha al canal adecuado según preferencias del cliente.
+**Pattern:** Event-Driven. Services publish events to EventBridge. The Notification Service subscribes and dispatches to the appropriate channel based on customer preferences.
 
-**Justificación 1:** El desacoplamiento vía EventBridge evita dependencia directa entre Transfer Service y Notification Service. Si el servicio de notificaciones cae, las transferencias no se bloquean.
-
-**Justificación 2:** Usar AWS SES + SNS como servicios gestionados garantiza SLA del 99.9% y cumple con regulaciones de comunicación financiera sin infraestructura adicional.
+**Justification:** Decoupling via EventBridge avoids direct dependency between Transfer Service and Notification Service. Using AWS SES + SNS as managed services guarantees 99.9% SLA and complies with financial communication regulations.
 
 ---
 
-## 10. Arquitectura de Auditoría
+## 10. Audit Architecture
 
-**Base de datos:** AWS DynamoDB (append-only, sin UPDATE ni DELETE)
+**Database:** AWS DynamoDB (append-only, no UPDATE or DELETE)
 
-**Justificación 1:** DynamoDB con política IAM que deniega UpdateItem y DeleteItem garantiza inmutabilidad del registro de auditoría, cumpliendo con SOX y normativas bancarias que exigen trails no modificables.
+**Justification 1:** DynamoDB with IAM policy denying UpdateItem and DeleteItem guarantees audit record immutability, complying with SOX and banking regulations.
 
-**Justificación 2:** DynamoDB escala de forma ilimitada, soporta TTL nativo para archivado automático, y cifra en reposo por defecto — características esenciales para logs regulatorios de largo plazo.
+**Justification 2:** DynamoDB scales limitlessly, supports native TTL for automatic archival, and encrypts at rest by default — essential for long-term regulatory logs.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#1168bd', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#0b4e99', 'lineColor': '#444444', 'secondaryColor': '#e8f0fa', 'tertiaryColor': '#f0f0f0'}}}%%
 flowchart LR
-    T[Cualquier acción del cliente] --> EB[AWS EventBridge]
+    T[Customer action] --> EB[AWS EventBridge]
     EB --> AS[Audit Service]
     AS --> DDB[(DynamoDB\nAudit Table)]
-    DDB --> S3[(S3 Archive\nPor expiración TTL)]
+    DDB --> S3[(S3 Archive\nTTL)]
 ```
 
-**Esquema de registro de auditoría:**
+**Audit record schema:**
 
-| Campo | Tipo | Descripción |
+| Field | Type | Description |
 |---|---|---|
-| `auditId` | String (PK) | UUID v4 único |
-| `clientId` | String (SK) | ID del cliente |
-| `timestamp` | ISO 8601 | Fecha y hora UTC |
-| `action` | String | LOGIN, TRANSFER, QUERY, etc. |
-| `sourceIP` | String | IP origen |
+| `auditId` | String (PK) | UUID v4 |
+| `clientId` | String (SK) | Customer ID |
+| `timestamp` | ISO 8601 | UTC date and time |
+| `action` | String | LOGIN, TRANSFER, QUERY… |
+| `sourceIP` | String | Source IP |
 | `channel` | String | WEB / MOBILE |
-| `payload` | JSON | Detalle de la acción (sin datos sensibles) |
 | `result` | String | SUCCESS / FAILURE |
 
 ---
 
-## 11. Infraestructura en Nube — AWS
+## 11. Cloud Infrastructure — AWS
 
 ```mermaid
 C4Container
-  title Infraestructura AWS — BP Internet Banking
+  title AWS Infrastructure — BP Internet Banking
 
-  Person(user, "Cliente / Admin")
+  Person(user, "Customer / Admin")
 
   System_Boundary(aws, "AWS — us-east-1") {
-    Container(cdn, "CloudFront", "AWS CloudFront", "CDN global — SPA y assets estáticos")
-    Container(alb, "Load Balancer", "AWS ALB Multi-AZ", "Distribución de tráfico entre zonas")
-    Container(eks, "EKS Cluster", "Kubernetes", "Microservicios en 2 zonas de disponibilidad")
-    Container(events, "Event Bus", "AWS EventBridge + SQS", "Eventos asincrónicos con DLQ")
-    ContainerDb(aurora, "BD Operacional", "Aurora PostgreSQL", "Multi-AZ, failover < 30s")
+    Container(cdn, "CloudFront", "AWS CloudFront", "Global CDN — SPA and static assets")
+    Container(alb, "Load Balancer", "AWS ALB Multi-AZ", "Traffic distribution")
+    Container(eks, "EKS Cluster", "Kubernetes", "Microservices across 2 availability zones")
+    Container(events, "Event Bus", "AWS EventBridge + SQS", "Async events with DLQ")
+    ContainerDb(aurora, "Operational DB", "Aurora PostgreSQL", "Multi-AZ, failover < 30s")
     ContainerDb(redis, "Cache", "ElastiCache Redis", "Cache-Aside, Multi-AZ")
-    ContainerDb(dynamo, "BD Auditoría", "DynamoDB", "Append-only, Global Tables")
+    ContainerDb(dynamo, "Audit DB", "DynamoDB", "Append-only, Global Tables")
   }
 
   Rel(user, cdn, "HTTPS")
   Rel(cdn, alb, "HTTPS")
-  Rel(alb, eks, "Distribuye tráfico")
+  Rel(alb, eks, "Distributes traffic")
   Rel(eks, aurora, "SQL")
   Rel(eks, redis, "Cache")
-  Rel(eks, dynamo, "Auditoría")
-  Rel(eks, events, "Publica eventos")
+  Rel(eks, dynamo, "Audit")
+  Rel(eks, events, "Publishes events")
 ```
 
-### Servicios AWS utilizados
+### AWS Services Used
 
-| Servicio | Uso | Justificación |
+| Service | Use | Justification |
 |---|---|---|
-| EKS (Kubernetes) | Orquestación de microservicios | Portabilidad, auto-healing, HPA |
-| Aurora PostgreSQL | Base de datos operacional | ACID, Multi-AZ, failover automático < 30s |
-| DynamoDB | Auditoría append-only | Escala ilimitada, inmutabilidad vía IAM |
-| ElastiCache Redis | Cache-Aside | Sub-milisecond latency, Multi-AZ |
-| API Gateway | Gateway de entrada | Rate limiting, JWT validation, WAF |
-| EventBridge | Bus de eventos | Desacoplamiento, routing por reglas |
-| SQS | Dead Letter Queue | Reintentos y tolerancia a fallos |
-| CloudFront | CDN para SPA | Baja latencia global, caché de assets |
-| Rekognition | Reconocimiento facial | ML gestionado, sin infraestructura |
-| SES | Email transaccional | SLA 99.9%, cumplimiento regulatorio |
-| SNS | SMS / Push | Multi-canal, entrega garantizada |
-| WAF + Shield | Seguridad perimetral | Protección DDoS y OWASP Top 10 |
-| CloudWatch | Monitoreo y alertas | Métricas, logs, dashboards, alarmas |
-| Secrets Manager | Gestión de secretos | Rotación automática, sin hardcoding |
+| EKS (Kubernetes) | Microservice orchestration | Portability, auto-healing, HPA |
+| Aurora PostgreSQL | Operational database | ACID, Multi-AZ, automatic failover < 30s |
+| DynamoDB | Append-only audit | Unlimited scale, immutability via IAM, native TTL |
+| ElastiCache Redis | Cache-Aside | Sub-millisecond latency, Multi-AZ |
+| API Gateway | Entry gateway | Rate limiting, JWT validation, WAF |
+| EventBridge + SQS | Event bus + DLQ | Decoupling, retries, fault tolerance |
+| CloudFront | CDN for SPA | Low global latency, asset caching |
+| Rekognition / SES / SNS | Biometrics + notifications | Managed services, 99.9% SLA |
+| WAF + Shield | Perimeter security | DDoS protection, OWASP Top 10 |
+| CloudWatch + X-Ray | Observability | Metrics, logs, distributed tracing |
+| Secrets Manager | Secret management | Automatic rotation, no hardcoding |
 
 ---
 
-## 12. Alta Disponibilidad, Tolerancia a Fallos y Recuperación ante Desastres
+## 12. High Availability, Fault Tolerance and Disaster Recovery
 
-### Alta Disponibilidad (HA)
+### High Availability
 
-- **Multi-AZ:** Todos los servicios desplegados en mínimo 2 zonas de disponibilidad
-- **Auto Scaling:** HPA en Kubernetes ajusta réplicas según CPU/RPS
-- **Load Balancing:** ALB distribuye tráfico entre zonas automáticamente
-- **Circuit Breaker:** Resilience4j previene cascada de fallos hacia sistemas externos
-- **Aurora Multi-AZ:** Failover automático en < 30 segundos sin intervención manual
+- **Multi-AZ:** All services deployed across minimum 2 availability zones
+- **Auto Scaling:** Kubernetes HPA adjusts replicas based on CPU/RPS
+- **Circuit Breaker:** Resilience4j prevents failure cascade to external systems
+- **Aurora Multi-AZ:** Automatic failover in < 30 seconds
 
-### Tolerancia a Fallos
+### Fault Tolerance
 
-- **SQS Dead Letter Queue:** Eventos que fallan después de 3 reintentos van a DLQ para revisión
-- **Idempotency Keys:** Las transferencias incluyen `idempotencyKey` para evitar duplicados en reintentos
-- **Graceful Degradation:** Si el Sistema de Detalle falla, Account Service retorna datos básicos del Core
-- **Timeout + Retry:** Configurados en todos los clientes HTTP con backoff exponencial
+- **SQS Dead Letter Queue:** Failed events after 3 retries go to DLQ
+- **Idempotency Keys:** Transfers include `idempotencyKey` to prevent duplicates
+- **Graceful Degradation:** If Detail System fails, Account Service returns Core data
+- **Timeout + Retry:** Exponential backoff on all HTTP clients
 
-### Recuperación ante Desastres (DR)
+### Disaster Recovery
 
-| RTO | RPO | Estrategia |
+| RTO | RPO | Strategy |
 |---|---|---|
-| < 1 hora | < 5 minutos | Aurora Global Database — réplica en región secundaria |
-| < 4 horas | < 1 hora | DynamoDB Global Tables replicado en us-west-2 |
-| < 15 minutos | 0 (eventos) | EventBridge replay de eventos archivados |
+| < 1 hour | < 5 min | Aurora Global Database — replica in secondary region |
+| < 4 hours | < 1 hour | DynamoDB Global Tables replicated in us-west-2 |
+| < 15 min | 0 (events) | EventBridge replay of archived events |
 
 ---
 
-## 13. Seguridad
+## 13. Security
 
-### Capas de Seguridad
-
-| Capa | Control | Tecnología |
+| Layer | Control | Technology |
 |---|---|---|
-| Perímetro | DDoS, OWASP Top 10 | AWS WAF + Shield Advanced |
-| Transporte | Cifrado en tránsito | TLS 1.3 en todos los canales |
-| Autenticación | JWT + PKCE + MFA | Keycloak + AWS Cognito (fallback) |
-| Autorización | RBAC por rol y canal | Keycloak + Spring Security |
-| Datos en reposo | Cifrado AES-256 | AWS KMS en Aurora, DynamoDB, S3 |
-| Secretos | Sin hardcoding | AWS Secrets Manager con rotación |
-| Código | SAST / DAST | SonarQube + OWASP ZAP en CI/CD |
-| Contenedores | Escaneo de imágenes | Amazon ECR Image Scanning |
+| Perimeter | DDoS, OWASP Top 10 | AWS WAF + Shield Advanced |
+| Transport | Encryption in transit | TLS 1.3 on all channels |
+| Authentication | JWT + PKCE + MFA | Keycloak |
+| Authorization | RBAC by role and channel | Spring Security |
+| Data at rest | AES-256 | AWS KMS on Aurora, DynamoDB, S3 |
+| Secrets | No hardcoding | AWS Secrets Manager with rotation |
+| Containers | Image scanning | Amazon ECR Image Scanning |
 
-### Consideraciones Normativas
+### Regulatory Compliance
 
-| Normativa | Aplicación |
+| Regulation | Application |
 |---|---|
-| **PCI DSS v4** | Datos de tarjetas — cifrado, logging, segmentación de red |
-| **Ley de Protección de Datos** | Consentimiento, derecho al olvido, minimización de datos |
-| **SOX** | Registro de auditoría inmutable, controles de acceso financiero |
-| **PSD2 / Open Banking** | Strong Customer Authentication (SCA) con 2FA obligatorio |
-| **ISO 27001** | SGSI — políticas de seguridad, gestión de riesgos |
-| **SWIFT Security Framework** | Controles para transferencias interbancarias |
-| **Circular SFC / Superfinanciera** | Continuidad de negocio, gestión de incidentes, reporte regulatorio |
-| **GDPR / ISO 29134** | Privacy by Design, evaluación de impacto (DPIA) |
+| PCI DSS v4 | Card data — encryption, logging, network segmentation |
+| SOX | Immutable audit trail, financial access controls |
+| PSD2 / Open Banking | Strong Customer Authentication (SCA) — mandatory 2FA |
+| Data Protection Law | Consent, right to erasure, data minimization |
+| ISO 27001 | ISMS — security policies, risk management |
 
 ---
 
-## 14. Monitoreo y Excelencia Operativa
+## 14. Monitoring and Operational Excellence
 
-### Stack de Observabilidad
-
-| Pilar | Herramienta | Qué mide |
+| Pillar | Tool | What it measures |
 |---|---|---|
-| Métricas | CloudWatch + Prometheus | CPU, memoria, RPS, latencia p95/p99 |
-| Logs | CloudWatch Logs + Elasticsearch | Trazas de request, errores, auditoría |
-| Trazas | AWS X-Ray | Distributed tracing entre microservicios |
-| Alertas | CloudWatch Alarms + PagerDuty | Anomalías, errores críticos, SLA breach |
-| Dashboards | Grafana | Vista unificada de salud del sistema |
+| Metrics | CloudWatch + Prometheus | CPU, memory, RPS, p95/p99 latency |
+| Logs | CloudWatch Logs | Request traces, errors, audit |
+| Traces | AWS X-Ray | Distributed tracing across microservices |
+| Alerts | CloudWatch Alarms | Anomalies, errors, SLA breach |
+| Dashboards | Grafana | Unified system health view |
 
-### KPIs de Producción
+### Production KPIs
 
-| Métrica | Objetivo |
+| Metric | Target |
 |---|---|
-| Disponibilidad | 99.95% mensual |
-| Latencia p95 (consultas) | < 300ms |
-| Latencia p95 (transferencias) | < 2 segundos |
-| Tasa de error | < 0.1% |
-| Tiempo de failover Aurora | < 30 segundos |
-
-### Auto-Healing
-
-- **Kubernetes Liveness/Readiness Probes:** Reinicia pods no saludables automáticamente
-- **EKS Node Auto Repair:** Reemplaza nodos con fallo sin intervención manual
-- **Aurora Auto Failover:** Promueve réplica a primaria en fallo de la primaria
-- **Lambda Retry:** Reintentos automáticos en procesamiento de eventos
+| Availability | 99.95% monthly |
+| p95 latency (queries) | < 300ms |
+| p95 latency (transfers) | < 2 seconds |
+| Error rate | < 0.1% |
+| Aurora failover | < 30 seconds |
 
 ---
 
-## 15. Decisiones Arquitectónicas (ADR)
+## 15. Architectural Decisions (ADR)
 
-| # | Decisión | Opción elegida | Alternativa evaluada | Justificación |
+| # | Decision | Chosen | Alternative | Justification |
 |---|---|---|---|---|
-| 1 | Arquitectura base | Microservicios | Monolito | Escalabilidad independiente por servicio; despliegue sin coordinación global |
-| 2 | Orquestación | EKS (Kubernetes) | ECS Fargate | Portabilidad, comunidad, HPA y self-healing nativo |
-| 3 | BD Operacional | Aurora PostgreSQL | RDS MySQL | ACID, failover < 30s, réplicas de lectura, compatibilidad PostgreSQL |
-| 4 | BD Auditoría | DynamoDB | PostgreSQL | Escala ilimitada, inmutabilidad vía IAM, TTL nativo |
-| 5 | Caché | Redis (ElastiCache) | Memcached | Estructuras de datos avanzadas, persistencia, pub/sub para invalidación |
-| 6 | Mensajería | EventBridge | Kafka | Menor operación, integración nativa AWS, routing por reglas declarativas |
-| 7 | Auth flow | Authorization Code + PKCE | Implicit Flow | RFC 8252 / OAuth 2.1 — PKCE es el estándar para apps públicas |
-| 8 | IdP | Keycloak | Implementación propia | Producto corporativo existente, reduce TCO, OAuth 2.0 / OIDC compliant |
-| 9 | Biometría | AWS Rekognition | Azure Face API | BP ya opera en AWS — menor latencia, sin egress cross-cloud |
-| 10 | App Móvil | Flutter | React Native | Un solo código para iOS/Android, acceso a APIs biométricas nativas |
-| 11 | SPA | React + TypeScript | Angular | Ecosistema más amplio, flexibilidad, TypeScript para type safety |
-| 12 | Patrón Caché | Cache-Aside | Write-Through | Core Banking externo no soporta write-through; control explícito de invalidación |
-| 13 | Notificaciones | EventBridge + SES + SNS | Twilio | Integración nativa AWS, menor latencia, SLA 99.9%, menor costo |
-| 14 | Gateway | AWS API Gateway | Kong | Menor operación, integración con WAF, Lambda authorizer nativo |
+| 1 | Architecture | Microservices | Monolith | Independent scalability per service |
+| 2 | Orchestration | EKS (Kubernetes) | ECS Fargate | Portability, HPA, native self-healing |
+| 3 | Operational DB | Aurora PostgreSQL | RDS MySQL | ACID, failover < 30s, read replicas |
+| 4 | Audit DB | DynamoDB | PostgreSQL | Unlimited scale, immutability via IAM |
+| 5 | Cache | Redis (ElastiCache) | Memcached | Persistence, pub/sub for invalidation |
+| 6 | Messaging | EventBridge | Kafka | Less overhead, native AWS, declarative routing |
+| 7 | Auth flow | Authorization Code + PKCE | Implicit Flow | RFC 8252 / OAuth 2.1 — standard for public apps |
+| 8 | IdP | Keycloak | Custom | Existing corporate product, OAuth 2.0 / OIDC |
+| 9 | Biometrics | AWS Rekognition | Azure Face API | BP on AWS — lower latency, no cross-cloud egress |
+| 10 | Mobile | Flutter | React Native | Single codebase, native biometric API |
+| 11 | SPA | React + TypeScript | Angular | Flexibility, TypeScript type safety |
+| 12 | Cache pattern | Cache-Aside | Write-Through | External Core Banking; explicit invalidation control |
+| 13 | Notifications | EventBridge + SES + SNS | Twilio | Native AWS, 99.9% SLA, lower cost |
+| 14 | Gateway | AWS API Gateway | Kong | Less overhead, WAF integration, Lambda authorizer |
 
 ---
 
-*Arquitectura diseñada bajo modelo C4 — Context · Container · Component*
+*Architecture designed under the C4 model — Context · Container · Component*
