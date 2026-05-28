@@ -17,44 +17,31 @@ BP requiere un sistema de banca por internet que permita a sus clientes consulta
 > Para audiencias no técnicas. Muestra el sistema BP Internet Banking y sus relaciones con usuarios y sistemas externos.
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#1168bd', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#0b4e99', 'lineColor': '#555555', 'clusterBkg': '#f4f7fb', 'clusterBorder': '#bbbbbb'}}}%%
-flowchart LR
-    classDef person fill:#08427b,stroke:#052e56,color:#ffffff
-    classDef system fill:#1168bd,stroke:#0b4e99,color:#ffffff
-    classDef ext fill:#6b6b6b,stroke:#4a4a4a,color:#ffffff
+C4Context
+  title Contexto — BP Internet Banking
 
-    subgraph personas[" "]
-        direction TB
-        customer["Cliente Bancario\nConsulta cuentas, transfiere\ny paga desde web o móvil"]
-        admin["Administrador\nMonitorea transacciones\ny gestiona el sistema"]
-    end
+  Person(customer, "Cliente Bancario", "Consulta cuentas, transfiere y paga desde web o móvil")
+  Person(admin, "Administrador", "Monitorea transacciones y gestiona el sistema")
 
-    bp["BP Internet Banking\nSPA + App Móvil: cuentas,\ntransferencias y notificaciones"]
+  System(bp, "BP Internet Banking", "SPA + App Móvil: cuentas, transferencias y notificaciones")
 
-    subgraph externos[" "]
-        direction TB
-        core["Core Banking\nDatos de cliente y movimientos"]
-        detail["Detalle de Cliente\nInformación complementaria"]
-        idp["Identity Provider\nOAuth 2.0 — autenticación"]
-        rekognition["AWS Rekognition\nReconocimiento facial"]
-        ses["AWS SES — Email"]
-        sns["AWS SNS — SMS"]
-        payments["Red de Pagos\nACH / SWIFT"]
-    end
+  System_Ext(core, "Core Banking", "Datos de cliente y movimientos")
+  System_Ext(detail, "Detalle de Cliente", "Información complementaria")
+  System_Ext(idp, "Identity Provider", "OAuth 2.0 — autenticación")
+  System_Ext(rekognition, "AWS Rekognition", "Reconocimiento facial")
+  System_Ext(ses, "AWS SES", "Notificaciones por email")
+  System_Ext(sns, "AWS SNS", "Notificaciones por SMS")
+  System_Ext(payments, "Red de Pagos", "ACH / SWIFT")
 
-    customer -->|"Usa (HTTPS)"| bp
-    admin -->|"Administra (HTTPS)"| bp
-    bp -->|"Datos y movimientos"| core
-    bp -->|"Perfil detallado"| detail
-    bp -->|"Autenticación"| idp
-    bp -->|"Biometría"| rekognition
-    bp -->|"Email"| ses
-    bp -->|"SMS"| sns
-    bp -->|"Transferencias"| payments
-
-    class customer,admin person
-    class bp system
-    class core,detail,idp,rekognition,ses,sns,payments ext
+  Rel(customer, bp, "Usa", "HTTPS")
+  Rel(admin, bp, "Administra", "HTTPS")
+  Rel(bp, core, "Datos y movimientos")
+  Rel(bp, detail, "Perfil detallado")
+  Rel(bp, idp, "Autenticación")
+  Rel(bp, rekognition, "Biometría")
+  Rel(bp, ses, "Email")
+  Rel(bp, sns, "SMS")
+  Rel(bp, payments, "Transferencias")
 ```
 
 ### Actores y Sistemas Externos
