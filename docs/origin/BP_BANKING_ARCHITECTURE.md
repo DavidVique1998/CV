@@ -57,10 +57,15 @@ C4Context
 > For technical audiences. Shows applications, services, databases and messaging with technologies and protocols.
 
 ```mermaid
+%%{init: {"layout": "elk"}}%%
 C4Container
   title Containers — BP Internet Banking
 
   Person(customer, "Customer")
+
+  System_Ext(core, "Core Banking")
+  System_Ext(idp, "Identity Provider")
+  System_Ext(payments, "Payment Network")
 
   System_Boundary(bp, "BP Internet Banking") {
     Container(spa, "Web SPA", "React + TypeScript", "Browser banking interface")
@@ -74,10 +79,6 @@ C4Container
     ContainerDb(db, "Operational DB", "Aurora PostgreSQL", "ACID, Multi-AZ")
     ContainerDb(audit_db, "Audit DB", "DynamoDB", "Append-only — immutable via IAM")
   }
-
-  System_Ext(core, "Core Banking")
-  System_Ext(idp, "Identity Provider")
-  System_Ext(payments, "Payment Network")
 
   Rel(customer, spa, "Uses", "HTTPS")
   Rel(customer, mobile, "Uses", "HTTPS")
@@ -364,6 +365,7 @@ flowchart LR
 ## 11. Cloud Infrastructure — AWS
 
 ```mermaid
+%%{init: {"layout": "elk"}}%%
 C4Container
   title AWS Infrastructure — BP Internet Banking
 
