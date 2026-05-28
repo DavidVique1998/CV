@@ -17,31 +17,44 @@ BP requiere un sistema de banca por internet que permita a sus clientes consulta
 > Para audiencias no técnicas. Muestra el sistema BP Internet Banking y sus relaciones con usuarios y sistemas externos.
 
 ```mermaid
-C4Context
-  title Diagrama de Contexto — BP Internet Banking
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#1168bd', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#0b4e99', 'lineColor': '#555555', 'clusterBkg': '#f4f7fb', 'clusterBorder': '#bbbbbb'}}}%%
+flowchart LR
+    classDef person fill:#08427b,stroke:#052e56,color:#ffffff
+    classDef system fill:#1168bd,stroke:#0b4e99,color:#ffffff
+    classDef ext fill:#6b6b6b,stroke:#4a4a4a,color:#ffffff
 
-  Person(customer, "Cliente Bancario", "Consulta movimientos, realiza transferencias y pagos desde web o móvil")
-  Person(admin, "Administrador de Operaciones", "Gestiona el sistema, monitorea transacciones y alertas")
+    subgraph personas[" "]
+        direction TB
+        customer["Cliente Bancario\nConsulta cuentas, transfiere\ny paga desde web o móvil"]
+        admin["Administrador\nMonitorea transacciones\ny gestiona el sistema"]
+    end
 
-  System(bp_banking, "BP Internet Banking", "Plataforma multicanal: SPA + App Móvil. Consulta de cuentas, transferencias, pagos y notificaciones")
+    bp["BP Internet Banking\nSPA + App Móvil: cuentas,\ntransferencias y notificaciones"]
 
-  System_Ext(core_platform, "Core Banking Platform", "Plataforma core: información básica de cliente, movimientos y productos")
-  System_Ext(client_detail, "Sistema de Detalle de Cliente", "Información complementaria del cliente para vistas detalladas")
-  System_Ext(idp, "Identity Provider (OAuth 2.0)", "Producto corporativo existente. Gestiona autenticación y tokens")
-  System_Ext(facial_recognition, "AWS Rekognition", "Reconocimiento facial para onboarding de nuevos clientes")
-  System_Ext(email_svc, "AWS SES — Email", "Notificaciones de movimientos por correo electrónico")
-  System_Ext(sms_svc, "AWS SNS — SMS", "Notificaciones de movimientos por mensaje de texto")
-  System_Ext(payment_network, "Red de Pagos (ACH / SWIFT)", "Ejecución de transferencias interbancarias")
+    subgraph externos[" "]
+        direction TB
+        core["Core Banking\nDatos de cliente y movimientos"]
+        detail["Detalle de Cliente\nInformación complementaria"]
+        idp["Identity Provider\nOAuth 2.0 — autenticación"]
+        rekognition["AWS Rekognition\nReconocimiento facial"]
+        ses["AWS SES — Email"]
+        sns["AWS SNS — SMS"]
+        payments["Red de Pagos\nACH / SWIFT"]
+    end
 
-  Rel(customer, bp_banking, "Usa", "HTTPS")
-  Rel(admin, bp_banking, "Administra", "HTTPS")
-  Rel(bp_banking, core_platform, "Consulta datos y movimientos", "REST / TLS")
-  Rel(bp_banking, client_detail, "Consulta perfil detallado", "REST / TLS")
-  Rel(bp_banking, idp, "Delega autenticación", "OAuth 2.0 / OIDC")
-  Rel(bp_banking, facial_recognition, "Verifica identidad biométrica", "REST / TLS")
-  Rel(bp_banking, email_svc, "Envía alertas por email", "HTTPS / SMTP")
-  Rel(bp_banking, sms_svc, "Envía alertas por SMS", "HTTPS")
-  Rel(bp_banking, payment_network, "Ejecuta transferencias interbancarias", "ISO 20022 / REST")
+    customer -->|"Usa (HTTPS)"| bp
+    admin -->|"Administra (HTTPS)"| bp
+    bp -->|"Datos y movimientos"| core
+    bp -->|"Perfil detallado"| detail
+    bp -->|"Autenticación"| idp
+    bp -->|"Biometría"| rekognition
+    bp -->|"Email"| ses
+    bp -->|"SMS"| sns
+    bp -->|"Transferencias"| payments
+
+    class customer,admin person
+    class bp system
+    class core,detail,idp,rekognition,ses,sns,payments ext
 ```
 
 ### Actores y Sistemas Externos
@@ -66,64 +79,59 @@ C4Context
 
 ```mermaid
 C4Container
-  title Diagrama de Contenedores — BP Internet Banking
+  title Contenedores — BP Internet Banking
 
-  Person(customer, "Cliente Bancario")
+  Person(customer, "Cliente")
   Person(admin, "Administrador")
 
   System_Boundary(bp, "BP Internet Banking") {
-    Container(spa, "SPA Web", "React 18 + TypeScript", "Interfaz bancaria para navegador — consultas, transferencias y pagos")
-    Container(mobile, "App Móvil", "Flutter 3", "App iOS/Android — onboarding biométrico, autenticación por huella y operaciones bancarias")
-    Container(api_gateway, "API Gateway", "AWS API Gateway", "Punto de entrada único: rate limiting, validación de token JWT, enrutamiento")
-    Container(auth_svc, "Auth Service", "Keycloak (OAuth 2.0 / OIDC)", "Emisión de tokens, refresh, revocación. Flujo Authorization Code + PKCE")
-    Container(onboarding_svc, "Onboarding Service", "Node.js + Express", "Registro de nuevos clientes — verificación facial y alta en IdP")
-    Container(account_svc, "Account Service", "Java + Spring Boot", "Consulta de datos de cliente y productos. Cache-Aside sobre Redis")
-    Container(movement_svc, "Movement Service", "Java + Spring Boot", "Consulta de historial de movimientos y estados de cuenta")
-    Container(transfer_svc, "Transfer Service", "Java + Spring Boot", "Transferencias propias e interbancarias con circuit breaker")
-    Container(notification_svc, "Notification Service", "Node.js", "Dispatcher de alertas multicanal: email y SMS")
-    Container(audit_svc, "Audit Service", "Java + Spring Boot", "Registro append-only de todas las acciones del cliente")
-    Container(integration_layer, "Integration Layer", "Spring Boot + RestTemplate", "Adaptadores hacia Core Banking y Sistema de Detalle")
-    Container(event_bus, "Event Bus", "AWS EventBridge", "Enrutamiento de eventos asincrónicos entre microservicios")
-    Container(cache, "Cache", "AWS ElastiCache — Redis", "Cache-Aside para clientes frecuentes. TTL configurable por tipo de dato")
-    ContainerDb(ops_db, "Base de Datos Operacional", "AWS Aurora PostgreSQL", "Datos transaccionales con ACID, Multi-AZ y réplicas de lectura")
-    ContainerDb(audit_db, "Base de Datos de Auditoría", "AWS DynamoDB", "Registro append-only, infinitamente escalable, TTL y cifrado en reposo")
+    Container(spa, "SPA Web", "React + TypeScript", "Interfaz bancaria para navegador")
+    Container(mobile, "App Móvil", "Flutter", "iOS/Android — biometría y operaciones")
+    Container(api_gw, "API Gateway", "AWS API Gateway", "Punto de entrada: auth, rate limit, enrutamiento")
+    Container(auth, "Auth Service", "Keycloak", "OAuth 2.0 + PKCE — tokens y sesiones")
+    Container(onboarding, "Onboarding Service", "Node.js", "Alta de clientes con verificación facial")
+    Container(account, "Account Service", "Spring Boot", "Cuentas y productos — Cache-Aside sobre Redis")
+    Container(movement, "Movement Service", "Spring Boot", "Historial de movimientos")
+    Container(transfer, "Transfer Service", "Spring Boot", "Transferencias propias e interbancarias")
+    Container(notification, "Notification Service", "Node.js", "Dispatcher de alertas: email y SMS")
+    Container(audit, "Audit Service", "Spring Boot", "Registro append-only de acciones")
+    Container(events, "Event Bus", "AWS EventBridge", "Enrutamiento de eventos asincrónicos")
+    Container(cache, "Cache", "Redis — ElastiCache", "Cache-Aside — TTL por tipo de dato")
+    ContainerDb(db, "BD Operacional", "Aurora PostgreSQL", "ACID, Multi-AZ, réplicas de lectura")
+    ContainerDb(audit_db, "BD Auditoría", "DynamoDB", "Append-only — inmutable por IAM")
   }
 
-  System_Ext(core_platform, "Core Banking Platform")
-  System_Ext(client_detail, "Sistema de Detalle")
-  System_Ext(idp_ext, "Identity Provider")
+  System_Ext(core, "Core Banking")
+  System_Ext(idp, "Identity Provider")
   System_Ext(rekognition, "AWS Rekognition")
   System_Ext(ses, "AWS SES")
   System_Ext(sns, "AWS SNS")
-  System_Ext(payment_net, "Red de Pagos")
+  System_Ext(payments, "Red de Pagos")
 
   Rel(customer, spa, "Usa", "HTTPS")
   Rel(customer, mobile, "Usa", "HTTPS")
-  Rel(admin, api_gateway, "Administra", "HTTPS")
-  Rel(spa, api_gateway, "Llamadas API", "HTTPS + JWT")
-  Rel(mobile, api_gateway, "Llamadas API", "HTTPS + JWT")
-  Rel(api_gateway, auth_svc, "Valida token", "HTTPS")
-  Rel(api_gateway, account_svc, "Enruta", "HTTPS")
-  Rel(api_gateway, movement_svc, "Enruta", "HTTPS")
-  Rel(api_gateway, transfer_svc, "Enruta", "HTTPS")
-  Rel(api_gateway, onboarding_svc, "Enruta", "HTTPS")
-  Rel(auth_svc, idp_ext, "Delega autenticación", "OAuth 2.0 / OIDC")
-  Rel(onboarding_svc, rekognition, "Verifica biometría", "REST / TLS")
-  Rel(onboarding_svc, auth_svc, "Crea usuario en IdP", "REST")
-  Rel(account_svc, cache, "Lee / escribe caché", "Redis")
-  Rel(account_svc, integration_layer, "Consulta datos", "REST")
-  Rel(movement_svc, integration_layer, "Consulta movimientos", "REST")
-  Rel(integration_layer, core_platform, "Lee datos core", "REST / TLS")
-  Rel(integration_layer, client_detail, "Lee detalle de cliente", "REST / TLS")
-  Rel(transfer_svc, ops_db, "Lee / escribe", "SQL")
-  Rel(transfer_svc, payment_net, "Ejecuta transferencia", "ISO 20022")
-  Rel(transfer_svc, event_bus, "Publica evento", "EventBridge")
-  Rel(account_svc, ops_db, "Lee / escribe", "SQL")
-  Rel(event_bus, notification_svc, "Dispara alerta", "EventBridge")
-  Rel(event_bus, audit_svc, "Dispara auditoría", "EventBridge")
-  Rel(notification_svc, ses, "Envía email", "HTTPS")
-  Rel(notification_svc, sns, "Envía SMS", "HTTPS")
-  Rel(audit_svc, audit_db, "Escribe registro", "DynamoDB SDK")
+  Rel(admin, api_gw, "Administra")
+  Rel(spa, api_gw, "API calls", "JWT / HTTPS")
+  Rel(mobile, api_gw, "API calls", "JWT / HTTPS")
+  Rel(api_gw, auth, "Valida token")
+  Rel(api_gw, account, "Enruta")
+  Rel(api_gw, movement, "Enruta")
+  Rel(api_gw, transfer, "Enruta")
+  Rel(api_gw, onboarding, "Enruta")
+  Rel(auth, idp, "OAuth 2.0 / OIDC")
+  Rel(onboarding, rekognition, "Verifica biometría")
+  Rel(account, cache, "Cache-Aside")
+  Rel(account, core, "Datos de cuenta")
+  Rel(movement, core, "Historial")
+  Rel(transfer, db, "Persiste")
+  Rel(transfer, payments, "ACH / SWIFT")
+  Rel(transfer, events, "Publica evento")
+  Rel(events, notification, "Dispara alerta")
+  Rel(events, audit, "Dispara auditoría")
+  Rel(notification, ses, "Email")
+  Rel(notification, sns, "SMS")
+  Rel(audit, audit_db, "Append-only")
+  Rel(account, db, "Lee / escribe")
 ```
 
 ---
@@ -139,34 +147,34 @@ C4Component
   title Componentes — Transfer Service
 
   Container_Boundary(transfer_svc, "Transfer Service (Spring Boot)") {
-    Component(ctrl, "TransferController", "REST Controller", "Valida y enruta solicitudes de transferencia. Expone /transfers/own y /transfers/interbank")
-    Component(validator, "TransferValidator", "Business Logic", "Valida límites diarios, saldo disponible, cuentas activas y reglas antifraude")
-    Component(own_handler, "OwnTransferHandler", "Service", "Ejecuta transferencias entre cuentas propias del cliente")
-    Component(interbank_handler, "InterbankHandler", "Service", "Prepara y envía transferencias ACH/SWIFT con reintentos")
-    Component(circuit_breaker, "CircuitBreaker", "Resilience — Resilience4j", "Aísla fallos de sistemas externos. Estados: CLOSED / OPEN / HALF-OPEN")
-    Component(transfer_repo, "TransferRepository", "Data Access — JPA", "Persiste registros de transferencia. Implementa Cache-Aside sobre Redis")
-    Component(event_publisher, "DomainEventPublisher", "Messaging", "Publica eventos TransferCompleted y TransferFailed a EventBridge")
+    Component(ctrl, "TransferController", "REST Controller", "Expone /transfers/own y /transfers/interbank")
+    Component(validator, "TransferValidator", "Business Logic", "Valida límites, saldo y reglas antifraude")
+    Component(own_handler, "OwnTransferHandler", "Service", "Transfiere entre cuentas propias")
+    Component(interbank_handler, "InterbankHandler", "Service", "Envía ACH/SWIFT con reintentos")
+    Component(circuit_breaker, "CircuitBreaker", "Resilience4j", "CLOSED / OPEN / HALF-OPEN")
+    Component(transfer_repo, "TransferRepository", "JPA / Cache-Aside", "Persiste registros, lee desde Redis")
+    Component(event_publisher, "DomainEventPublisher", "Messaging", "Publica TransferCompleted / TransferFailed")
   }
 
   ContainerDb(ops_db, "Aurora PostgreSQL")
   Container(cache, "Redis — ElastiCache")
   Container(event_bus, "AWS EventBridge")
-  System_Ext(core, "Core Banking Platform")
-  System_Ext(payment_net, "Red de Pagos ACH/SWIFT")
+  System_Ext(core, "Core Banking")
+  System_Ext(payment_net, "Red de Pagos")
 
-  Rel(ctrl, validator, "Valida solicitud")
-  Rel(validator, core, "Consulta saldo", "REST / TLS")
-  Rel(validator, own_handler, "Si cuentas propias")
-  Rel(validator, interbank_handler, "Si interbancaria")
+  Rel(ctrl, validator, "Valida")
+  Rel(validator, core, "Consulta saldo")
+  Rel(validator, own_handler, "Cuentas propias")
+  Rel(validator, interbank_handler, "Interbancaria")
   Rel(own_handler, transfer_repo, "Persiste")
-  Rel(own_handler, event_publisher, "Emite TransferCompleted")
+  Rel(own_handler, event_publisher, "Emite evento")
   Rel(interbank_handler, circuit_breaker, "Llamada protegida")
-  Rel(circuit_breaker, payment_net, "Ejecuta ACH/SWIFT")
+  Rel(circuit_breaker, payment_net, "ACH / SWIFT")
   Rel(interbank_handler, transfer_repo, "Persiste")
   Rel(interbank_handler, event_publisher, "Emite evento")
-  Rel(transfer_repo, cache, "Cache-Aside — lectura")
-  Rel(transfer_repo, ops_db, "Persiste en BD")
-  Rel(event_publisher, event_bus, "Publica evento")
+  Rel(transfer_repo, cache, "Cache-Aside")
+  Rel(transfer_repo, ops_db, "SQL")
+  Rel(event_publisher, event_bus, "Publica")
 ```
 
 ### 4.2 Auth Service — Componentes (Keycloak + PKCE)
@@ -176,12 +184,12 @@ C4Component
   title Componentes — Auth Service (OAuth 2.0 + PKCE)
 
   Container_Boundary(auth_svc, "Auth Service (Keycloak)") {
-    Component(auth_endpoint, "Authorization Endpoint", "OAuth 2.0", "Inicia flujo Authorization Code. Genera code_challenge para PKCE")
-    Component(token_endpoint, "Token Endpoint", "OAuth 2.0", "Emite access_token y refresh_token tras verificar code_verifier")
+    Component(auth_endpoint, "Authorization Endpoint", "OAuth 2.0", "Inicia flujo PKCE — genera code_challenge")
+    Component(token_endpoint, "Token Endpoint", "OAuth 2.0", "Emite tokens tras verificar code_verifier")
     Component(userinfo_endpoint, "UserInfo Endpoint", "OIDC", "Retorna claims del usuario autenticado")
-    Component(mfa_provider, "MFA Provider", "Plugin Keycloak", "Segundo factor: OTP / huella dactilar / facial (post-onboarding)")
-    Component(session_manager, "Session Manager", "Keycloak Internal", "Gestiona sesiones activas, refresh tokens y revocación")
-    Component(user_store, "User Store", "Keycloak — PostgreSQL", "Almacena credenciales, roles y atributos de usuario")
+    Component(mfa_provider, "MFA Provider", "Plugin Keycloak", "Segundo factor: OTP / huella / facial")
+    Component(session_manager, "Session Manager", "Keycloak", "Sesiones, refresh tokens y revocación")
+    Component(user_store, "User Store", "PostgreSQL", "Credenciales, roles y atributos")
   }
 
   Container(spa, "SPA Web")
@@ -189,41 +197,42 @@ C4Component
   Container(onboarding_svc, "Onboarding Service")
   System_Ext(idp_ext, "Identity Provider Corporativo")
 
-  Rel(spa, auth_endpoint, "Inicia login (PKCE)", "HTTPS + code_challenge")
-  Rel(mobile, auth_endpoint, "Inicia login (PKCE)", "HTTPS + code_challenge")
-  Rel(auth_endpoint, mfa_provider, "Solicita 2do factor")
+  Rel(spa, auth_endpoint, "Login PKCE", "HTTPS")
+  Rel(mobile, auth_endpoint, "Login PKCE", "HTTPS")
+  Rel(auth_endpoint, mfa_provider, "2do factor")
   Rel(auth_endpoint, token_endpoint, "Autoriza código")
   Rel(token_endpoint, session_manager, "Crea sesión")
-  Rel(token_endpoint, user_store, "Verifica credenciales")
+  Rel(token_endpoint, user_store, "Verifica")
   Rel(session_manager, user_store, "Lee / escribe")
-  Rel(auth_endpoint, idp_ext, "Federación si aplica", "SAML / OIDC")
-  Rel(onboarding_svc, user_store, "Crea usuario nuevo", "Keycloak Admin API")
+  Rel(auth_endpoint, idp_ext, "Federación", "SAML / OIDC")
+  Rel(onboarding_svc, user_store, "Crea usuario", "Admin API")
 ```
 
 ### 4.3 Account Service — Componentes (Cache-Aside)
 
 ```mermaid
 C4Component
-  title Componentes — Account Service (Cache-Aside Pattern)
+  title Componentes — Account Service (Cache-Aside)
 
   Container_Boundary(account_svc, "Account Service (Spring Boot)") {
-    Component(account_ctrl, "AccountController", "REST Controller", "Expone /accounts, /accounts/{id}/products")
-    Component(account_service, "AccountService", "Business Logic", "Orquesta consulta de datos básicos y detalle de cliente")
-    Component(cache_manager, "CacheManager", "Cache-Aside", "Lee de Redis primero. Si miss: consulta fuente y escribe en caché")
-    Component(account_repo, "AccountRepository", "Data Access", "Capa de acceso a datos operacionales")
-    Component(integration_client, "IntegrationClient", "HTTP Client — Feign", "Llama a Integration Layer para datos del core y detalle")
+    Component(account_ctrl, "AccountController", "REST Controller", "Expone /accounts y /accounts/{id}/products")
+    Component(account_service, "AccountService", "Business Logic", "Orquesta datos básicos y detalle de cliente")
+    Component(cache_manager, "CacheManager", "Cache-Aside", "Lee Redis primero; si miss consulta fuente")
+    Component(account_repo, "AccountRepository", "Data Access", "Acceso a datos operacionales")
+    Component(integration_client, "IntegrationClient", "Feign HTTP", "Llama a Core Banking y Sistema de Detalle")
   }
 
   ContainerDb(ops_db, "Aurora PostgreSQL")
   Container(cache, "Redis — ElastiCache")
-  Container(integration_layer, "Integration Layer")
+  System_Ext(core, "Core Banking")
+  System_Ext(detail, "Sistema de Detalle")
 
   Rel(account_ctrl, account_service, "Delega")
   Rel(account_service, cache_manager, "Solicita dato")
-  Rel(cache_manager, cache, "Lee caché")
-  Rel(cache_manager, integration_client, "Cache miss: consulta fuente")
-  Rel(cache_manager, cache, "Escribe en caché tras miss")
-  Rel(integration_client, integration_layer, "REST")
+  Rel(cache_manager, cache, "Lee / escribe")
+  Rel(cache_manager, integration_client, "Cache miss")
+  Rel(integration_client, core, "Datos core", "REST")
+  Rel(integration_client, detail, "Datos detalle", "REST")
   Rel(account_service, account_repo, "Datos operacionales")
   Rel(account_repo, ops_db, "SQL")
 ```
@@ -248,14 +257,14 @@ C4Component
 **Justificación 2:** RFC 8252 ("OAuth 2.0 for Native Apps") exige PKCE para aplicaciones móviles porque no pueden guardar secretos de forma segura. PKCE usa un `code_verifier` generado en el dispositivo, lo que hace el código de autorización inútil si es interceptado.
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#1168bd', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#0b4e99', 'lineColor': '#444444', 'secondaryColor': '#e8f0fa', 'tertiaryColor': '#f0f0f0'}}}%%
 flowchart TD
     A[Cliente genera\ncode_verifier + code_challenge] --> B[GET /authorize\ncode_challenge incluido]
     B --> C[Keycloak: login + MFA]
-    C --> D[Redirect con\nauthorization_code]
-    D --> E[POST /token\ncode + code_verifier]
-    E --> F[Keycloak valida\nchallenge == hash verifier]
-    F --> G[Retorna\naccess_token + refresh_token]
-    G --> H[API Gateway valida JWT\nen cada request]
+    C --> D[POST /token\ncode + code_verifier]
+    D --> E{challenge == hash verifier?}
+    E -- Sí --> F[access_token + refresh_token\nAPI Gateway valida JWT]
+    E -- No --> G[Error: acceso denegado]
 ```
 
 ### Métodos de Autenticación Post-Onboarding
@@ -272,6 +281,7 @@ flowchart TD
 ## 6. Arquitectura de Onboarding — Reconocimiento Facial
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#1168bd', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#0b4e99', 'lineColor': '#444444', 'secondaryColor': '#e8f0fa', 'tertiaryColor': '#f0f0f0'}}}%%
 flowchart TD
     A[Nuevo cliente descarga App] --> B[Ingresa datos básicos]
     B --> C[Captura selfie en tiempo real]
@@ -304,6 +314,7 @@ flowchart TD
 **Justificación 2:** El Core Banking Platform es un sistema externo que no controlamos. Cache-Aside es el único patrón aplicable cuando la fuente de datos es un sistema legado externo sin soporte para write-through nativo.
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#1168bd', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#0b4e99', 'lineColor': '#444444', 'secondaryColor': '#e8f0fa', 'tertiaryColor': '#f0f0f0'}}}%%
 flowchart LR
     A[Request de cliente] --> B{¿Dato en Redis?}
     B -- Hit --> C[Retorna desde caché\nlatencia < 1ms]
@@ -324,6 +335,7 @@ flowchart LR
 ## 8. Capa de Integración — API Gateway + Adaptadores
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#1168bd', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#0b4e99', 'lineColor': '#444444', 'secondaryColor': '#e8f0fa', 'tertiaryColor': '#f0f0f0'}}}%%
 flowchart TD
     GW[AWS API Gateway] --> AS[Account Service]
     GW --> MS[Movement Service]
@@ -380,6 +392,7 @@ flowchart TD
 **Justificación 2:** DynamoDB escala de forma ilimitada, soporta TTL nativo para archivado automático, y cifra en reposo por defecto — características esenciales para logs regulatorios de largo plazo.
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#1168bd', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#0b4e99', 'lineColor': '#444444', 'secondaryColor': '#e8f0fa', 'tertiaryColor': '#f0f0f0'}}}%%
 flowchart LR
     T[Cualquier acción del cliente] --> EB[AWS EventBridge]
     EB --> AS[Audit Service]
@@ -405,15 +418,15 @@ flowchart LR
 ## 11. Infraestructura en Nube — AWS
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#1168bd', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#0b4e99', 'lineColor': '#444444', 'secondaryColor': '#e8f0fa', 'tertiaryColor': '#f0f0f0'}}}%%
 flowchart TD
-    CF[CloudFront CDN] --> ALB1[Application Load Balancer\nZona A]
-    CF --> ALB2[Application Load Balancer\nZona B]
+    CF[CloudFront CDN] --> ALB[Application Load Balancer\nMulti-AZ]
 
-    ALB1 --> EKS1[EKS Node Group\nus-east-1a]
-    ALB2 --> EKS2[EKS Node Group\nus-east-1b]
+    ALB --> EKS1[EKS — us-east-1a]
+    ALB --> EKS2[EKS — us-east-1b]
 
-    EKS1 --> AURORA[(Aurora PostgreSQL\nPrimary — AZ-a)]
-    EKS2 --> AURORA_R[(Aurora Read Replica\nAZ-b)]
+    EKS1 --> AURORA[(Aurora PostgreSQL\nPrimary)]
+    EKS2 --> AURORA_R[(Aurora\nRead Replica)]
 
     EKS1 --> REDIS[(ElastiCache Redis\nMulti-AZ)]
     EKS2 --> REDIS
