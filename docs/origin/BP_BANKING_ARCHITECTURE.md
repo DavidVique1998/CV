@@ -218,14 +218,12 @@ C4Component
 **Justificación 2:** RFC 8252 ("OAuth 2.0 for Native Apps") exige PKCE para aplicaciones móviles porque no pueden guardar secretos de forma segura. PKCE usa un `code_verifier` generado en el dispositivo, lo que hace el código de autorización inútil si es interceptado.
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#1168bd', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#0b4e99', 'lineColor': '#444444', 'secondaryColor': '#e8f0fa', 'tertiaryColor': '#f0f0f0'}}}%%
 flowchart TD
-    A[Cliente genera\ncode_verifier + code_challenge] --> B[GET /authorize\ncode_challenge incluido]
-    B --> C[Keycloak: login + MFA]
-    C --> D[POST /token\ncode + code_verifier]
-    D --> E{challenge == hash verifier?}
-    E -- Sí --> F[access_token + refresh_token\nAPI Gateway valida JWT]
-    E -- No --> G[Error: acceso denegado]
+    A[App genera verifier y challenge] --> B[GET /authorize + challenge\nKeycloak: login + MFA]
+    B --> C[POST /token + verifier]
+    C --> D{SHA-256 verifier == challenge?}
+    D -- Sí --> E[access_token + refresh_token]
+    D -- No --> F[403 Acceso denegado]
 ```
 
 ### Métodos de Autenticación Post-Onboarding
@@ -242,18 +240,11 @@ flowchart TD
 ## 6. Arquitectura de Onboarding — Reconocimiento Facial
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#1168bd', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#0b4e99', 'lineColor': '#444444', 'secondaryColor': '#e8f0fa', 'tertiaryColor': '#f0f0f0'}}}%%
 flowchart TD
-    A[Nuevo cliente descarga App] --> B[Ingresa datos básicos]
-    B --> C[Captura selfie en tiempo real]
-    C --> D[App envía selfie al Onboarding Service]
-    D --> E[Onboarding Service llama AWS Rekognition]
-    E --> F{¿Verificación exitosa?}
-    F -- No --> G[Solicita nuevo intento o rechaza]
-    F -- Sí --> H[Crea usuario en Keycloak\nvía Admin API]
-    H --> I[Asigna roles y atributos]
-    I --> J[Envía credenciales por email\nvía AWS SES]
-    J --> K[Cliente puede ingresar\ncon usuario/clave o huella]
+    A[Cliente registra datos básicos] --> B[Captura selfie → AWS Rekognition]
+    B --> C{Verificación facial OK?}
+    C -- No --> D[Rechaza o solicita reintento]
+    C -- Sí --> E[Crea usuario en Keycloak\nEnvía credenciales por SES]
 ```
 
 **Herramienta recomendada:** AWS Rekognition — servicio gestionado, SLA 99.9%, sin necesidad de equipo de ML interno. Alternativa evaluada: Azure Face API (similar capacidad, pero BP ya opera en AWS).
@@ -296,21 +287,31 @@ flowchart LR
 ## 8. Capa de Integración — API Gateway + Adaptadores
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#1168bd', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#0b4e99', 'lineColor': '#444444', 'secondaryColor': '#e8f0fa', 'tertiaryColor': '#f0f0f0'}}}%%
-flowchart TD
-    GW[AWS API Gateway] --> AS[Account Service]
-    GW --> MS[Movement Service]
-    GW --> TS[Transfer Service]
-    GW --> OS[Onboarding Service]
+C4Component
+  title Capa de Integración — API Gateway y Adaptadores
 
-    AS --> IL[Integration Layer]
-    MS --> IL
+  Component(api_gw, "API Gateway", "AWS API Gateway", "Auth, rate limit, enrutamiento")
 
-    IL --> CB[Core Banking Adapter\nDatos básicos y movimientos]
-    IL --> CD[Client Detail Adapter\nInformación enriquecida]
+  Container_Boundary(services, "Microservicios") {
+    Component(account, "Account Service", "Spring Boot", "Cuentas y movimientos")
+    Component(transfer, "Transfer Service", "Spring Boot", "Transferencias")
+  }
 
-    CB --> CORE[Core Banking Platform]
-    CD --> DETAIL[Sistema de Detalle]
+  Container_Boundary(integration, "Integration Layer") {
+    Component(core_adapter, "Core Banking Adapter", "Feign HTTP", "Datos básicos y movimientos")
+    Component(detail_adapter, "Client Detail Adapter", "Feign HTTP", "Perfil enriquecido")
+  }
+
+  System_Ext(core, "Core Banking Platform")
+  System_Ext(detail, "Sistema de Detalle")
+
+  Rel(api_gw, account, "Enruta")
+  Rel(api_gw, transfer, "Enruta")
+  Rel(account, core_adapter, "Consulta datos")
+  Rel(account, detail_adapter, "Perfil detallado")
+  Rel(transfer, core_adapter, "Consulta saldo")
+  Rel(core_adapter, core, "REST")
+  Rel(detail_adapter, detail, "REST")
 ```
 
 **Justificación 1:** El API Gateway centraliza autenticación, rate limiting y logging. Sin él, cada microservicio necesitaría implementar estas preocupaciones transversales, violando DRY y generando inconsistencias.
@@ -379,24 +380,28 @@ flowchart LR
 ## 11. Infraestructura en Nube — AWS
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#1168bd', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#0b4e99', 'lineColor': '#444444', 'secondaryColor': '#e8f0fa', 'tertiaryColor': '#f0f0f0'}}}%%
-flowchart TD
-    CF[CloudFront CDN] --> ALB[Application Load Balancer\nMulti-AZ]
+C4Container
+  title Infraestructura AWS — BP Internet Banking
 
-    ALB --> EKS1[EKS — us-east-1a]
-    ALB --> EKS2[EKS — us-east-1b]
+  Person(user, "Cliente / Admin")
 
-    EKS1 --> AURORA[(Aurora PostgreSQL\nPrimary)]
-    EKS2 --> AURORA_R[(Aurora\nRead Replica)]
+  System_Boundary(aws, "AWS — us-east-1") {
+    Container(cdn, "CloudFront", "AWS CloudFront", "CDN global — SPA y assets estáticos")
+    Container(alb, "Load Balancer", "AWS ALB Multi-AZ", "Distribución de tráfico entre zonas")
+    Container(eks, "EKS Cluster", "Kubernetes", "Microservicios en 2 zonas de disponibilidad")
+    Container(events, "Event Bus", "AWS EventBridge + SQS", "Eventos asincrónicos con DLQ")
+    ContainerDb(aurora, "BD Operacional", "Aurora PostgreSQL", "Multi-AZ, failover < 30s")
+    ContainerDb(redis, "Cache", "ElastiCache Redis", "Cache-Aside, Multi-AZ")
+    ContainerDb(dynamo, "BD Auditoría", "DynamoDB", "Append-only, Global Tables")
+  }
 
-    EKS1 --> REDIS[(ElastiCache Redis\nMulti-AZ)]
-    EKS2 --> REDIS
-
-    EKS1 --> DDB[(DynamoDB\nGlobal Tables)]
-    EKS2 --> DDB
-
-    EKS1 --> EB[EventBridge]
-    EB --> SQS[SQS Dead Letter Queue]
+  Rel(user, cdn, "HTTPS")
+  Rel(cdn, alb, "HTTPS")
+  Rel(alb, eks, "Distribuye tráfico")
+  Rel(eks, aurora, "SQL")
+  Rel(eks, redis, "Cache")
+  Rel(eks, dynamo, "Auditoría")
+  Rel(eks, events, "Publica eventos")
 ```
 
 ### Servicios AWS utilizados
