@@ -1,20 +1,20 @@
-# Solution Architecture — BP Internet Banking
+# Solution Architecture: BP Internet Banking
 
 **C4 Design · Internet Banking System**
 
-> Document following the C4 model (Context → Container → Component) with architectural justifications per exercise requirements.
+Document following the C4 model (Context, Container, Component) with architectural justifications per exercise requirements.
 
 ---
 
 ## 1. Executive Summary
 
-BP requires an internet banking system for account viewing, own and interbank transfers, and real-time notifications. The proposed solution is a **microservices architecture on AWS** with two front-end channels (SPA + Mobile App), OAuth 2.0 + PKCE authentication, biometric onboarding, a centralized integration layer, append-only audit logging, and multi-region high availability.
+This document lays out an internet banking platform for BP covering account visibility, own and interbank transfers, and real-time notifications. The architecture is built on **microservices on AWS**: two front-end channels (SPA + Mobile App), OAuth 2.0 + PKCE authentication with biometric onboarding, a unified API Gateway, append-only audit logging, and multi-region availability. The guiding principle throughout was keeping each service independently deployable and scalable so the system can grow without a structural rewrite.
 
 ---
 
 ## 2. Context Diagram (C4 — Level 1)
 
-> For non-technical audiences. Shows BP Internet Banking and its relationships with users and external systems.
+High-level view for non-technical stakeholders. Shows what BP Internet Banking does and which external systems it depends on.
 
 ```mermaid
 %%{init: {"layout": "elk"}}%%
@@ -55,60 +55,85 @@ C4Context
 
 ---
 
-## 3. Container Diagram (C4 — Level 2)
+## 3. Container Diagrams (C4 — Level 2)
 
-> For technical audiences. Shows applications, services, databases and messaging with technologies and protocols.
+Technical detail of the main deployment units. Split into two views to keep each readable: channels and authentication on the left, domain services and data on the right.
+
+<div class="two-col">
+<div>
+<h3>3a. Channels and Authentication</h3>
+<p>Shows user-facing containers and the authentication flow. Entry point for all client interactions.</p>
 
 ```mermaid
-%%{init: {"layout": "elk"}}%%
 C4Container
-  title Containers — BP Internet Banking
+  title Container Diagram 3a — Channels and Authentication
 
-  Person(customer, "Customer")
-
-  System_Ext(core, "Core Banking")
-  System_Ext(detail, "Customer Detail")
-  System_Ext(idp, "Identity Provider")
-  System_Ext(payments, "Payment Network")
+  Person(customer, "Banking Customer", "Views accounts, transfers and payments")
 
   System_Boundary(bp, "BP Internet Banking") {
-    Container(spa, "Web SPA", "React + TypeScript", "Browser banking interface")
-    Container(mobile, "Mobile App", "Flutter", "iOS/Android — biometrics and operations")
-    Container(api_gw, "API Gateway", "AWS API Gateway", "Auth, rate limiting, routing")
-    Container(auth, "Auth Service", "Keycloak", "OAuth 2.0 + PKCE — tokens and sessions")
-    Container(account, "Account Service", "Spring Boot", "Accounts and transactions — Cache-Aside")
-    Container(transfer, "Transfer Service", "Spring Boot", "Transfers — Circuit Breaker")
-    Container(events, "Event Bus", "AWS EventBridge", "Async events and audit")
-    Container(cache, "Cache", "Redis ElastiCache", "Cache-Aside — TTL per data type")
-    ContainerDb(db, "Operational DB", "Aurora PostgreSQL", "ACID, Multi-AZ")
-    ContainerDb(audit_db, "Audit DB", "DynamoDB", "Append-only — immutable via IAM")
+    Container(spa, "Web SPA", "React + TypeScript", "Browser-based banking interface")
+    Container(mobile, "Mobile App", "Flutter", "iOS and Android banking app")
+    Container(api_gw, "API Gateway", "AWS API Gateway", "Routes and authenticates all requests")
+    Container(auth, "Auth Service", "Keycloak", "OAuth 2.0 + PKCE — issues and validates tokens")
   }
+
+  System_Ext(idp, "Identity Provider", "OAuth 2.0 — external authentication and token issuance")
 
   Rel(customer, spa, "Uses", "HTTPS")
   Rel(customer, mobile, "Uses", "HTTPS")
-  Rel(spa, api_gw, "API calls", "HTTPS")
-  Rel(mobile, api_gw, "API calls", "HTTPS")
-  Rel(api_gw, auth, "Validates token")
-  Rel(api_gw, account, "Routes")
-  Rel(api_gw, transfer, "Routes")
-  Rel(auth, idp, "OAuth 2.0 / OIDC")
-  Rel(account, cache, "Cache-Aside")
-  Rel(account, db, "SQL")
-  Rel(account, core, "Basic data")
-  Rel(account, detail, "Detailed profile")
-  Rel(transfer, db, "Persists")
-  Rel(transfer, payments, "ACH / SWIFT")
-  Rel(transfer, events, "Publishes event")
-  Rel(events, audit_db, "Append-only audit")
+  Rel(spa, api_gw, "API calls", "JSON/HTTPS")
+  Rel(mobile, api_gw, "API calls", "JSON/HTTPS")
+  Rel(api_gw, auth, "Validates tokens")
+  Rel(auth, idp, "Federated auth", "OAuth 2.0")
 ```
+
+</div>
+<div>
+<h3>3b. Business Services and Data</h3>
+<p>Shows domain services, data stores and external integrations. API Gateway is referenced from diagram 3a.</p>
+
+```mermaid
+C4Container
+  title Container Diagram 3b — Business Services and Data
+
+  Container_Ext(api_gw, "API Gateway", "AWS API Gateway", "Routes authenticated requests (see diagram 3a)")
+
+  System_Boundary(bp, "BP Internet Banking") {
+    Container(account, "Account Service", "Spring Boot", "Account queries and balance")
+    Container(transfer, "Transfer Service", "Spring Boot", "Own and interbank transfers")
+    Container(events, "Event Bus", "AWS EventBridge", "Async event routing")
+    ContainerDb(cache, "Cache", "Redis / ElastiCache", "Session and query cache")
+    ContainerDb(db, "Operational DB", "Aurora PostgreSQL", "Transactional data")
+    ContainerDb(audit_db, "Audit DB", "DynamoDB", "Immutable audit log")
+  }
+
+  System_Ext(core, "Core Banking", "Account data, movements and products")
+  System_Ext(detail, "Customer Detail", "Supplementary customer information")
+  System_Ext(payments, "Payment Network", "ACH / SWIFT — interbank transfers")
+
+  Rel(api_gw, account, "Routes requests")
+  Rel(api_gw, transfer, "Routes requests")
+  Rel(account, cache, "Reads/writes")
+  Rel(account, db, "Reads/writes", "SQL")
+  Rel(account, core, "Queries data", "REST")
+  Rel(account, detail, "Queries profile", "REST")
+  Rel(transfer, db, "Reads/writes", "SQL")
+  Rel(transfer, payments, "Submits transfers", "REST")
+  Rel(transfer, events, "Publishes events")
+  Rel(events, audit_db, "Writes audit log")
+```
+
+</div>
+</div>
 
 ---
 
 ## 4. Component Diagrams (C4 — Level 3)
 
-### 4.1 Transfer Service — Components
-
-> Critical service: handles own and interbank transfers with Circuit Breaker fault tolerance.
+<div class="two-col">
+<div>
+<h3>4.1 Transfer Service — Components</h3>
+<p>Critical service: handles own and interbank transfers with Circuit Breaker fault tolerance.</p>
 
 ```mermaid
 C4Component
@@ -139,7 +164,9 @@ C4Component
   Rel(event_publisher, event_bus, "Publishes")
 ```
 
-### 4.2 Auth Service — Components (Keycloak + PKCE)
+</div>
+<div>
+<h3>4.2 Auth Service — Components (Keycloak + PKCE)</h3>
 
 ```mermaid
 C4Component
@@ -165,6 +192,9 @@ C4Component
   Rel(session_manager, user_store, "Reads / writes")
   Rel(auth_endpoint, idp_ext, "SAML/OIDC Federation")
 ```
+
+</div>
+</div>
 
 ### 4.3 Account Service — Components (Cache-Aside)
 
@@ -195,7 +225,7 @@ C4Component
 
 ---
 
-## 5. Authentication Architecture — OAuth 2.0 + PKCE
+## 5. Authentication Architecture: OAuth 2.0 + PKCE
 
 ### Recommended Flow: Authorization Code Flow + PKCE
 
@@ -208,9 +238,7 @@ C4Component
 | Refresh token | Not supported | Yes, with rotation |
 | Standard status | **Deprecated (OAuth 2.1)** | **Actively recommended** |
 
-**Justification 1:** RFC 9700 / OAuth 2.1 removes Implicit Flow due to token leakage risk in URLs and logs. Authorization Code + PKCE mitigates this without requiring a `client_secret` in public apps.
-
-**Justification 2:** RFC 8252 requires PKCE for mobile apps because they cannot securely store secrets. PKCE uses a device-generated `code_verifier`, making an intercepted authorization code useless.
+RFC 9700 / OAuth 2.1 formally deprecates Implicit Flow — access tokens ending up in URL fragments and server logs is a real exposure in a banking context. Authorization Code + PKCE eliminates that without requiring a `client_secret` embedded in the app, which matters for public clients like SPAs and mobile apps. RFC 8252 is equally specific: PKCE is mandatory for mobile because phones can't safely store secrets. The `code_verifier` is generated on-device at login time, so anyone who intercepts the authorization code in transit gets nothing useful without it.
 
 ```mermaid
 flowchart LR
@@ -242,11 +270,7 @@ flowchart LR
     C -- Yes --> E[Keycloak user\n+ SES email]
 ```
 
-**Recommended tool:** AWS Rekognition — managed service, 99.9% SLA, no internal ML team required. Evaluated alternative: Azure Face API (similar capability, but BP already operates on AWS).
-
-**Justification 1:** Using a managed service reduces time-to-market and eliminates model training complexity. Rekognition has >99.5% accuracy for 1:1 verification.
-
-**Justification 2:** Separating Onboarding as an independent microservice allows scaling registration without affecting transactional service availability.
+AWS Rekognition handles facial verification — managed service, no ML team required, >99.5% accuracy for 1:1 verification, and BP is already on AWS. Azure Face API was evaluated and has comparable capabilities, but introducing a cross-cloud dependency just for biometrics adds latency and a new vendor to audit for financial compliance. Not worth it. Onboarding runs as its own microservice precisely so registration spikes during campaigns don't touch the transactional services at all.
 
 ---
 
@@ -254,9 +278,7 @@ flowchart LR
 
 **Chosen pattern:** Cache-Aside (Lazy Loading)
 
-**Justification 1:** Cache-Aside gives explicit control over what is cached. For sensitive banking data (balances, movements), selective invalidation is critical. Write-Through caches all writes including data that may never be read.
-
-**Justification 2:** Core Banking is an external system we do not control. Cache-Aside is the only applicable pattern when the data source is a legacy external system with no native write-through support.
+Cache-Aside was the only realistic option here. Core Banking is a legacy external system — there's no way to hook writes on the source side, which rules out Write-Through entirely. Beyond that, banking data requires selective invalidation: balances and movements have very different change frequencies, and a blanket cache-all-writes approach would serve stale data. Cache-Aside lets each service decide exactly what to cache, with TTLs tuned per data type.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#1168bd', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#0b4e99', 'lineColor': '#444444', 'secondaryColor': '#e8f0fa', 'tertiaryColor': '#f0f0f0'}}}%%
@@ -307,9 +329,7 @@ C4Component
   Rel(detail_adapter, detail, "REST")
 ```
 
-**Justification 1:** The API Gateway centralizes authentication, rate limiting and logging. Without it, each microservice would need to implement these cross-cutting concerns, violating DRY.
-
-**Justification 2:** The Integration Layer with adapters per external system (Adapter Pattern) isolates legacy contracts. If Core Banking changes its API, only the adapter is updated, not the business services.
+The API Gateway centralizes cross-cutting concerns — auth validation, rate limiting, WAF, request logging — that have no business being duplicated across every microservice. The Integration Layer underneath uses the Adapter Pattern: one dedicated client per external system. If Core Banking changes its API contract, only the Core Banking adapter needs updating; the business services never need to know.
 
 ### Defined Services
 
@@ -326,15 +346,13 @@ C4Component
 
 ## 9. Notification Architecture
 
-**Channel 1 — Email (AWS SES):** Transaction alerts, transfer confirmations, password recovery.
+**Email (AWS SES):** Transaction alerts, transfer confirmations, password recovery.
 
-**Channel 2 — SMS (AWS SNS):** OTP for MFA, security alerts, critical confirmations.
+**SMS (AWS SNS):** OTP for MFA, security alerts, critical confirmations.
 
 **Pattern:** Event-Driven. Services publish events to EventBridge. The Notification Service subscribes and dispatches to the appropriate channel based on customer preferences.
 
-**Justification 1:** Decoupling via EventBridge avoids direct dependency between Transfer Service and Notification Service. If the notification service goes down, transfers are not blocked — the event is queued in SQS until delivery succeeds.
-
-**Justification 2:** AWS SES + SNS are managed services with 99.9% SLA and built-in regulatory compliance for financial communications. Evaluated alternative: Twilio — comparable delivery guarantees but adds a third-party dependency, higher per-message cost, and cross-cloud data egress fees not incurred with native AWS services.
+The event-driven approach here is non-negotiable. If the notification service is down, the transfer still completes — the event sits in SQS until the service recovers. A direct synchronous call would mean a notification outage blocks every transfer, which is unacceptable. SES and SNS were chosen over Twilio: the delivery guarantees are comparable (both 99.9% SLA), but native AWS services avoid a third-party vendor dependency, cross-cloud data egress fees, and one more integration to audit for financial regulatory compliance.
 
 ---
 
@@ -342,9 +360,7 @@ C4Component
 
 **Database:** AWS DynamoDB (append-only, no UPDATE or DELETE)
 
-**Justification 1:** DynamoDB with IAM policy denying UpdateItem and DeleteItem guarantees audit record immutability, complying with SOX and banking regulations.
-
-**Justification 2:** DynamoDB scales limitlessly, supports native TTL for automatic archival, and encrypts at rest by default — essential for long-term regulatory logs.
+DynamoDB is a deliberate choice for audit storage. An IAM policy that denies `UpdateItem` and `DeleteItem` makes records physically immutable — enforced at the infrastructure level, not just by convention. That's exactly what SOX requires. The practical advantages add up: unlimited scale, native TTL for automatic archival to S3, and encryption at rest by default. A relational database could technically work, but you'd need extra safeguards to achieve the same immutability guarantees, and audit tables grow indefinitely in a way that doesn't suit a relational model.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#1168bd', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#0b4e99', 'lineColor': '#444444', 'secondaryColor': '#e8f0fa', 'tertiaryColor': '#f0f0f0'}}}%%
@@ -415,22 +431,22 @@ C4Container
 
 ### Cost Management
 
-**Strategy:** Pay-per-use managed services + right-sized compute to minimize fixed costs.
+The cost model leans on pay-per-use managed services to avoid over-provisioning. The only meaningful fixed cost is EKS + EC2 nodes; everything else scales with actual traffic.
 
-| Service | Billing model | Monthly estimate (medium load) | Optimization lever |
+| Service | Billing model (verified) | Monthly estimate (medium load) | Optimization lever |
 |---|---|---|---|
-| EKS Cluster | Per cluster + EC2 nodes | ~$150 cluster + ~$300 nodes (3× t3.medium) | Karpenter autoscaler — scale to zero off-peak |
-| Aurora PostgreSQL | Per ACU (Serverless v2) | ~$200 (2–8 ACU) | Serverless v2 scales with traffic, no over-provisioning |
-| DynamoDB | On-demand + storage | ~$50 (audit writes + TTL cleanup) | TTL auto-expires old records, reduces storage cost |
-| ElastiCache Redis | Per node/hour | ~$120 (2× cache.t3.medium, Multi-AZ) | Tune TTLs to maximize hit rate; evict stale data |
-| API Gateway | Per million requests | ~$35 (10M requests/month) | Response caching reduces Lambda/EKS invocations |
-| EventBridge + SQS | Per event/message | ~$10 (low volume) | Batching reduces per-event cost |
-| CloudFront | Per GB transferred | ~$20 (100 GB/month) | Cache-Control headers maximize CDN hit rate |
-| AWS SES | Per 1K emails | ~$1 per 1K | Suppress non-critical emails to reduce volume |
-| CloudWatch | Per GB logs ingested | ~$30 | Set log retention to 30 days; export to S3 for long-term |
-| **Total estimate** | | **~$900–1,200 / month** | Scales with actual load (serverless/on-demand services) |
+| EKS Cluster | $0.10/cluster/hr + EC2 nodes | ~$73 cluster + ~$90 nodes (3× t3.medium @ $0.0416/hr) | Karpenter autoscaler — scale to zero off-peak |
+| Aurora PostgreSQL | ~$0.12/ACU-hr (Serverless v2) | ~$200–350 (avg 4 ACU × 720 hr) | Serverless v2 scales with traffic, no over-provisioning |
+| DynamoDB | $0.625/M writes · $0.125/M reads | ~$25 (audit-only, low write volume + TTL cleanup) | TTL auto-expires old records, reduces storage cost |
+| ElastiCache Redis | ~$0.068/node-hr (cache.t3.medium) | ~$98 (2× nodes × 720 hr, Multi-AZ) | Tune TTLs to maximize hit rate; evict stale data |
+| API Gateway | $1.00/M requests (first 300M) | ~$10 (10M requests/month) | Response caching reduces EKS invocations |
+| EventBridge + SQS | Per event/message (low volume) | ~$5 | Batching reduces per-event cost |
+| CloudFront | $0.085/GB (US, first 10 TB) | ~$9 (100 GB/month) | Cache-Control headers maximize CDN hit rate |
+| AWS SES | $0.10/1K emails | ~$1 (10K emails/month) | Suppress non-critical emails to reduce volume |
+| CloudWatch | $0.50/GB ingested (standard) | ~$15 (30 GB/month) | Set log retention to 30 days; export to S3 for long-term |
+| **Total estimate** | | **~$600–850 / month** | Scales with actual load (serverless/on-demand services) |
 
-**Cost governance:** AWS Budgets alert at 80% / 100% of monthly budget. Cost Explorer tags per service for chargeback visibility.
+AWS Budgets alerts at 80% and 100% of the monthly target. Cost Explorer tags are set per service so spending can be attributed by domain if needed.
 
 ---
 
@@ -527,4 +543,4 @@ C4Container
 
 ---
 
-*Architecture designed under the C4 model — Context · Container · Component*
+Architecture designed under the C4 model: Context, Container, Component

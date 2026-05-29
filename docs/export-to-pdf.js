@@ -202,7 +202,7 @@ async function convertToPDF(content) {
   <title>${codename}</title>
   <style>
     @page {
-      margin: 2.5cm 2.8cm 3cm 2.8cm;
+      margin: 1.5cm 2.8cm 1.5cm 2.8cm;
       @top-center {
         content: "${codename}";
         font-size: 9px;
@@ -225,7 +225,7 @@ async function convertToPDF(content) {
       }
     }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 12px; line-height: 1.6; max-width: 100%; margin: 0; padding: 0; color: #333333; }
-    img { max-width: 100%; height: auto; }
+    img { max-width: 100%; height: auto; page-break-inside: avoid; break-inside: avoid; }
     pre { background: #f4f4f4; padding: 0.5em; overflow-x: auto; font-size: 11px; }
     code { background: #f4f4f4; padding: 0.1em 0.3em; font-size: 11px; }
     table { border-collapse: collapse; width: 100%; font-size: 11px; margin: 0.5em 0; }
@@ -236,15 +236,20 @@ async function convertToPDF(content) {
     td { color: #333333; }
     a { color: #3498DB; text-decoration: none; }
     h1 { font-size: 1.5em; margin: 0.4em 0 0.2em; color: #2C3E50; }
-    h2 { font-size: 1.25em; margin: 0.7em 0 0.2em; color: #2C3E50; border-bottom: 1px solid #e0e0e0; padding-bottom: 0.1em; }
+    h2 { font-size: 1.25em; margin: 0.7em 0 0.2em; color: #2C3E50; }
     h3 { font-size: 1.05em; margin: 0.5em 0 0.15em; color: #2C3E50; }
     h4, h5, h6 { font-size: 1em; margin: 0.4em 0 0.1em; color: #2C3E50; }
     p { margin: 0.35em 0; }
-    hr { border: none; border-top: 1px solid #e0e0e0; margin: 0.6em 0; }
+    hr { display: none; margin: 0.6em 0; }
     ul, ol { margin: 0.2em 0; padding-left: 1.4em; }
     li { margin: 0.1em 0; }
-    blockquote { margin: 0.4em 0 0.4em 1em; padding: 0.2em 0.6em; border-left: 3px solid #ccc; color: #555; font-style: italic; }
+    blockquote { margin: 0.3em 0; padding: 0; border: none; color: #555; font-style: normal; }
+    em, i { font-style: normal; }
     .appendix-screenshots { page-break-before: always; }
+    .two-col { display: flex; gap: 20px; align-items: flex-start; page-break-inside: avoid; }
+    .two-col > div { flex: 1; min-width: 0; }
+    .two-col h3 { font-size: 1.05em; margin: 0 0 0.3em; color: #2C3E50; }
+    .two-col img { max-width: 100% !important; margin: 0.5em 0 !important; }
   </style>
 </head>
 <body>
