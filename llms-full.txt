@@ -16,9 +16,9 @@
 
 ## Summary
 
-Senior Full Stack AI Engineer with 5+ years building AI-driven SaaS products, automation pipelines,
-voice agents, and serverless cloud systems. End-to-end ownership across frontend (React, Next.js),
-backend (NestJS, Node.js), DevOps (AWS Lambda, SST, Docker, GitHub Actions), and AI integrations
+Senior Full Stack AI Engineer with 5+ years building AI-driven SaaS products, web and mobile apps
+(React Native), automation pipelines, voice agents, and serverless cloud systems. End-to-end ownership across frontend (React, Next.js),
+backend (NestJS, Node.js), cloud & DevOps (AWS, Azure, Docker, CI/CD), and AI integrations
 (OpenAI, Claude, LangChain, RAG, OCR, voice agents). Delivered production systems for US and European
 clients — dynamic LLM architectures, AI voice agents, CRM automations, and serverless cloud deployments.
 Comfortable working directly with founders and non-technical stakeholders.
@@ -28,25 +28,34 @@ Comfortable working directly with founders and non-technical stakeholders.
 **AI / LLM / Agents**
 OpenAI · Claude · Mistral · LangChain · RAG · OCR · mem0 · MCPs · Whisper · Embeddings · Vector DBs
 
-**Automation / CRM / Voice**
-N8N · GoHighLevel (GHL) · ElevenLabs · Twilio · Retell AI · WhatsApp API · Evolution API · Metricool API
+**Integrations / Automation / CRM / Voice**
+Salesforce · MeetMax · N8N · GoHighLevel (GHL) · ElevenLabs · Twilio · Retell AI · WhatsApp API · Evolution API · Metricool API
 
-**Frontend**
-React · Next.js · Angular · Vue.js · Tailwind CSS · Radix UI · Vite · Three.js
+**Languages**
+TypeScript · JavaScript · Python · SQL · Java · C#
+
+**Frontend & Mobile**
+React · Next.js · React Native (iOS/Android) · Angular · Vue.js · Tailwind CSS · Radix UI · Vite · Three.js
 
 **Backend**
 NestJS · Node.js · Express · Laravel · Python · Spring Boot · .NET · TypeORM · Passport · Swagger
 
 **Cloud / DevOps / Infrastructure**
-AWS Lambda · S3 · ECS · RDS · API Gateway · CloudFront · SST v4 · Terraform · Docker · GitHub Actions · Turborepo · MinIO
+AWS Lambda · S3 · ECS · RDS · API Gateway · CloudFront · SST v4 · Terraform · Docker · GitHub Actions · Turborepo · MinIO · Microsoft Azure · Azure DevOps Pipelines · CI/CD
 
 **Databases**
 PostgreSQL · MySQL · MongoDB · Qdrant · SQLite · Redis
 
-**AI Tooling**
-Claude Code · Cursor · Bolt · Lovable
+**Product & Tools**
+Product Design · UI/UX · Branding · Agile/Scrum · Claude Code · Cursor · Bolt · Lovable
 
 ## Detailed Work Experience
+
+### Product Developer — Full Stack @ Opal Group — New York, United States (Remote)
+**Jun. 2026 – Present**
+Stack: Web · iOS · Android · Next.js · NestJS · PostgreSQL · React Native · Azure · Azure DevOps Pipelines · CI/CD · Salesforce · MeetMax
+
+Designed and built Opal Group's meetings platform from scratch on three platforms: a **web app** (Next.js + NestJS + PostgreSQL) and **iOS and Android apps** (React Native) to schedule one-on-one meetings at executive conferences, deployed on Azure with CI/CD pipelines. Owned the product end to end, defining branding, color system and component layout from the company's identity and existing systems, and integrated **Salesforce** and **MeetMax** to unify CRM and meeting data in one workflow.
 
 ### Full Stack AI Developer @ Pinecrest Consulting — Texas, United States
 **Sept. 2025 – May 2026**
