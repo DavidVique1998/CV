@@ -48,6 +48,12 @@ Claude Code · Cursor · Bolt · Lovable
 
 ## Detailed Work Experience
 
+### Full Stack AI Developer @ Opal Group — New York, United States (Remote)
+**Jun. 2026 – Present**
+Stack: Web Platform · Native Android · Native iOS
+
+Building the meetings platform for Opal Group's executive conferences: a web app for scheduling and managing one-on-one meetings between event attendees, plus native Android and iOS apps.
+
 ### Full Stack AI Developer @ Pinecrest Consulting — Texas, United States
 **Sept. 2025 – May 2026**
 Stack: NestJS · Next.js · React 19 · AWS Lambda · SST · CloudFront · GitHub Actions · OpenAI · Claude API · OCR · GA4 · Cursor · Claude Code
