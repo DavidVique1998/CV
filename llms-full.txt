@@ -50,9 +50,9 @@ Claude Code · Cursor · Bolt · Lovable
 
 ### Product Developer — Full Stack @ Opal Group — New York, United States (Remote)
 **Jun. 2026 – Present**
-Stack: Salesforce · MeetMax · Native Android · Native iOS · Product Design · Branding
+Stack: Next.js · NestJS · PostgreSQL · React Native · Azure · Azure DevOps Pipelines · CI/CD · Salesforce · MeetMax
 
-Designed and built Opal Group's meetings platform from scratch: a web app plus native Android and iOS apps for scheduling one-on-one meetings at executive conferences. Owned the product end to end, defining branding, color system and component layout from the company's identity and existing systems, and integrated **Salesforce** and **MeetMax** to unify CRM and meeting data in one workflow.
+Designed and built Opal Group's meetings platform from scratch: a Next.js + NestJS + PostgreSQL web app and React Native apps for Android and iOS to schedule one-on-one meetings at executive conferences, deployed on Azure with CI/CD pipelines. Owned the product end to end, defining branding, color system and component layout from the company's identity and existing systems, and integrated **Salesforce** and **MeetMax** to unify CRM and meeting data in one workflow.
 
 ### Full Stack AI Developer @ Pinecrest Consulting — Texas, United States
 **Sept. 2025 – May 2026**
